@@ -1,0 +1,62 @@
+.ContainerEventos{
+    display: flex;
+    box-sizing: border-box;
+     margin: 0;
+    padding: 0;
+    margin-bottom: 3em;
+   
+   
+    
+   
+}
+.Imagem{
+    width: 599px;
+    height: 745px;
+    left: 805px;
+    top: -60px;
+    
+}
+
+.Titulo {
+  color: black;
+  font-size: 100px;
+  font-family: Gabarito, sans-serif;
+  font-weight: 550;
+  margin-bottom: 0;
+  
+  
+}
+
+.Subtitulo{
+color: black;
+font-size: 24px;
+font-family: Brawler;
+font-weight: 400;
+word-wrap: break-word
+}
+
+.BotaoDoar{
+  font-size: 20px;
+  width: 150px;
+  height: 60px;
+  display: block;
+  margin: 1px auto;
+  border-radius: 25px;
+  background-color: #41B273;
+  border-style: none; 
+  cursor: pointer;
+}
+.BotaoDoar:hover {
+    transform: scale(1.05);
+    transition: 0.3s;
+   }
+
+.SpanBotao{
+      color: white;
+      font-weight: 600;
+}
+
+.link {
+  text-decoration: none;
+  cursor: pointer;
+}

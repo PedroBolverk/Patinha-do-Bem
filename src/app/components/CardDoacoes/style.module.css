@@ -1,0 +1,97 @@
+/* lista.module.css */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3.1em;
+  padding: 20px;
+  width: 100%;           /* Garante que o container use toda a largura */
+  max-width: 1200px;     /* (opcional) limita largura máxima */
+  margin: 0 auto;        /* centraliza horizontalmente */
+  box-sizing: border-box; /* garante que padding não estoure o layout */
+}
+
+
+.card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 300px; 
+  font-family: 'Arial', sans-serif;
+  flex-shrink: 0; 
+  cursor: pointer;
+}
+.card:hover{
+  transform: scale(1.05)  ;
+  transition: 0.5s;
+}
+
+  
+  
+  .titulo {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  
+  .descricao {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #555;
+  }
+  
+  .progressBar {
+    background-color: #eee;
+    border-radius: 10px;
+    height: 16px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  
+  .progress {
+    background-color: #00bfae;
+    height: 100%;
+    transition: width 0.4s ease-in-out;
+  }
+  
+  .porcentagem {
+    display: block;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+    text-align: right;
+  }
+  .containerMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    padding: 40px 20px;
+    gap: 20px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  
+.botaoCadastrar {
+  background-color: #00bfae;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.botaoCadastrar:hover {
+  background-color: #009e94;
+}
