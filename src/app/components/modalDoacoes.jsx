@@ -1,7 +1,7 @@
 'use client';
 import styles from './Modal.module.css';
 
-export default function Modal({ doacao, onClose }) {
+export default function ModalDoacoes({ doacao, onClose }) {
   if (!doacao) return null;
 
   const porcentagem = Math.min(

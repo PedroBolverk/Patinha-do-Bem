@@ -4,7 +4,7 @@ import Link from 'next/link'
 export default function CadastrarDoacao () {
 
 return (
-<Link href="/CadastroAcoes&Eventos" className={styles.botaoCadastrar}>Cadastre sua Ação</Link>
+<Link href="/CadastroAcoes" className={styles.botaoCadastrar}>Cadastre sua Ação</Link>
 
 
     

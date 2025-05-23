@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import AsyncRetry from "async-retry";
+import { writeFile } from "fs/promises";
 
 const prisma = new PrismaClient();
 
@@ -7,7 +8,6 @@ export async function GET() {
   try {
     const eventos = await AsyncRetry(async () => {
       return await prisma.events.findMany({
-        // Removido include do organizador, pois não existe mais
         orderBy: { dataIni: 'asc' },
       });
     }, {
@@ -27,18 +27,35 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const body = await request.json();
-    const { titulo, descricao, dataIni, dataFim, local } = body;
+    const formData = await request.formData();
+
+    const titulo = formData.get('titulo');
+    const descricao = formData.get('descricao');
+    const dataIni = formData.get('dataIni');
+    const dataFim = formData.get('dataFim');
+    const local = formData.get('local');
+    const imagem = formData.get('imagem'); // objeto File
+
+    let imagePath = null;
+
+    if (imagem && typeof imagem.name === 'string') {
+      const buffer = Buffer.from(await imagem.arrayBuffer());
+      const fileName = `evento-${Date.now()}-${imagem.name}`;
+      const filePath = `./public/uploads/${fileName}`;
+
+      await writeFile(filePath, buffer);
+      imagePath = `/uploads/${fileName}`;
+    }
 
     const novoEvento = await AsyncRetry(async () => {
       return await prisma.events.create({
         data: {
-          titulo,
-          descricao,
+          titulo: String(titulo),
+          descricao: String(descricao),
           dataIni: new Date(dataIni),
           dataFim: new Date(dataFim),
-          local,
-          // organizadorId removido
+          local: String(local),
+          imagem: imagePath ?? '', // garante string mesmo se null
         },
       });
     }, {
@@ -50,6 +67,7 @@ export async function POST(request) {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     });
+
   } catch (error) {
     console.error('Erro ao salvar evento:', error);
     return new Response(

@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import styles from '@/app/components/CardDoacoes/style.module.css';
 import CardDoacao from '@/app/components/CardDoacoes/index';
-import CadastrarDoacao from '../components/ButtonCadastroDoacao';
-import Modal from '../components/modal';
+import CadastrarDoacao from '../components/ButtonCadastroDoacao/buttonCadastrarDoacao';
+import ModalDoacoes from '../components/modalDoacoes';
 
 export default function DoacoesPage() {
   //pegar doações qualquer
@@ -58,7 +58,7 @@ export default function DoacoesPage() {
         )}
       </div>
 
-      <Modal doacao={selecionada} onClose={() => setSelecionada(null)} />
+      <ModalDoacoes doacao={selecionada} onClose={() => setSelecionada(null)} />
     </main>
   );
 }

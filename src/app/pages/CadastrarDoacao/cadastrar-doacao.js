@@ -1,4 +1,4 @@
-import CadastrarDoacao from "@/app/components/ButtonCadastroDoacao";
+import CadastrarDoacao from "@/app/components/ButtonCadastroDoacao/buttonCadastrarDoacao";
 
 export default function CadastrarDoacaoPage () {
 
