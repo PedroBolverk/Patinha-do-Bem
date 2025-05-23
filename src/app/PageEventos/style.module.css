@@ -25,6 +25,7 @@
   overflow: hidden;
   transition: transform 0.2s ease;
   position: relative;
+  cursor: pointer;
 }
 
 .card:hover {
@@ -37,8 +38,11 @@
 
 .image {
   width: 100%;
-  height: auto;
+  aspect-ratio: 1/1; /*Proporção 1:1*/
   object-fit: cover;
+  object-position: center center;
+  border-radius: 8px;
+  display: block;
 }
 
 .date {
