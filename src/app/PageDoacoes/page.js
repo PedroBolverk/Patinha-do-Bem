@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import styles from '@/app/components/CardDoacoes/style.module.css';
 import CardDoacao from '@/app/components/CardDoacoes/index';
 import CadastrarDoacao from '../components/ButtonCadastroDoacao/buttonCadastrarDoacao';
-import ModalDoacoes from '../components/modalDoacoes';
+import ModalDoacoes from '../Modals/Doacoes/modalDoacoes';
 
 export default function DoacoesPage() {
   //pegar doações qualquer

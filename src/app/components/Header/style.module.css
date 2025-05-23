@@ -5,6 +5,13 @@
     align-items: center;
     text-decoration: none;
   }
+  .HamburguerButton {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+}
   
 .LogoHeader{ 
   width: 47px;
@@ -72,4 +79,66 @@
 .Linke{
   text-decoration: none;
   cursor: pointer;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .StyledHeader {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    height: auto;
+    position: relative;
+  }
+
+  .TituloHeader {
+    display: flex;
+    align-items: center;
+  }
+
+  .HamburguerButton {
+    display: block;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 1100;
+  }
+
+.Header {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: none;
+  flex-direction: column;
+  padding: 12px 24px;
+  z-index: 1001;
+  min-width: 170px;
+  align-items: center;
+text-align: center;
+
+}
+
+  .ShowMenu {
+    display: flex;
+  }
+
+  .HeaderLink,
+  .Linke {
+    font-size: 18px;
+    padding: 5px 0 ;
+
+    width: 100%;
+    color: #000;
+    text-decoration: none;
+  }
+
+  .LogoLogin {
+    display: none;
+  }
 }

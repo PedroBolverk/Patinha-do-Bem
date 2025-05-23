@@ -1,9 +1,11 @@
-'use client'
+'use client';
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { Form, InputGroup, Button } from 'react-bootstrap';
 import Image from 'next/image';
-import IconeUpload from '@/app/PageEventos/iconUpload.png' // ajuste conforme seu projeto
+import styles from './form.module.css'
+import IconeUpload from '@/app/PageEventos/iconUpload.png';
 
 export default function CadastrarEventoPage() {
   const router = useRouter();
@@ -33,9 +35,7 @@ export default function CadastrarEventoPage() {
     if (file) {
       setImageFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
+      reader.onloadend = () => setSelectedImage(reader.result);
       reader.readAsDataURL(file);
     }
   }
@@ -44,90 +44,114 @@ export default function CadastrarEventoPage() {
     e.preventDefault();
 
     const form = new FormData();
-    form.append('titulo', formData.titulo);
-    form.append('descricao', formData.descricao);
-    form.append('dataIni', formData.dataIni);
-    form.append('dataFim', formData.dataFim);
-    form.append('local', formData.local);
+    Object.entries(formData).forEach(([key, value]) =>
+      form.append(key, value)
+    );
     if (imageFile) {
       form.append('imagem', imageFile);
     }
 
     const res = await fetch('/api/eventos', {
       method: 'POST',
-      body: form, // FormData automaticamente define o header
+      body: form,
     });
 
     if (res.ok) {
       alert('Evento cadastrado com sucesso!');
-      router.push('/');
+      router.push('/PageEventos');
     } else {
       alert('Erro ao cadastrar o evento');
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        name="titulo"
-        placeholder="Título do Evento"
-        value={formData.titulo}
-        onChange={handleChange}
-        required
-      />
-      <textarea
-        name="descricao"
-        placeholder="Descrição"
-        value={formData.descricao}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="dataIni"
-        type="date"
-        value={formData.dataIni}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="dataFim"
-        type="date"
-        value={formData.dataFim}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="local"
-        placeholder="Local do Evento"
-        value={formData.local}
-        onChange={handleChange}
-        required
-      />
-
-      {/* Upload da imagem */}
-      <input
-        type="file"
-        accept="image/*"
-        hidden
-        ref={inputFileRef}
-        onChange={handleFileChange}
-      />
-      <div onClick={handleImageClick} style={{ cursor: 'pointer', marginTop: '1rem' }}>
-        {selectedImage ? (
-          <img
-            src={selectedImage}
-            alt="Imagem selecionada"
-            style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'contain' }}
+    <form onSubmit={handleSubmit} className={styles.formContainer}>
+      {/* Coluna esquerda: campos do formulário */}
+      <div className={styles.leftColumn}>
+        <InputGroup className="mb-3">
+          <InputGroup.Text>Título</InputGroup.Text>
+          <Form.Control
+            type="text"
+            name="titulo"
+            value={formData.titulo}
+            onChange={handleChange}
+            required
           />
-        ) : (
-          <>
-            <Image src={IconeUpload} alt="Upload ícone" width={50} height={50} />
-            <p>Clique aqui para enviar uma imagem</p>
-          </>
-        )}
+        </InputGroup>
+
+        <InputGroup className="mb-3">
+          <InputGroup.Text>Descrição</InputGroup.Text>
+          <Form.Control
+            type="text"
+            name="descricao"
+            value={formData.descricao}
+            onChange={handleChange}
+            required
+          />
+        </InputGroup>
+
+        <InputGroup className="mb-3">
+          <InputGroup.Text>Data de Início</InputGroup.Text>
+          <Form.Control
+            type="date"
+            name="dataIni"
+            value={formData.dataIni}
+            onChange={handleChange}
+            required
+          />
+        </InputGroup>
+
+        <InputGroup className="mb-3">
+          <InputGroup.Text>Data de Término</InputGroup.Text>
+          <Form.Control
+            type="date"
+            name="dataFim"
+            value={formData.dataFim}
+            onChange={handleChange}
+            required
+          />
+        </InputGroup>
+
+        <InputGroup className="mb-3">
+          <InputGroup.Text>Local</InputGroup.Text>
+          <Form.Control
+            type="text"
+            name="local"
+            value={formData.local}
+            onChange={handleChange}
+            required
+          />
+        </InputGroup>
+
+        <Button type="submit" variant="primary">
+          Cadastrar Evento
+        </Button>
       </div>
 
-      <button type="submit">Cadastrar Evento</button>
+      {/* Coluna direita: upload da imagem */}
+      <div className={styles.rightColumn}>
+        <input
+          type="file"
+          accept="image/*"
+          hidden
+          ref={inputFileRef}
+          onChange={handleFileChange}
+        />
+        <div onClick={handleImageClick} className={styles.uploadContainer}>
+          {selectedImage ? (
+            <img
+              src={selectedImage}
+              alt="Imagem selecionada"
+              className={styles.imagePreview}
+            />
+          ) : (
+            <>
+              <Image src={IconeUpload} className={styles.icone} alt="Upload ícone" width={80} height={80} />
+              <p style={{ marginTop: '1rem' }}>Clique para enviar imagem</p>
+            </>
+          )}
+        </div>
+      </div>
     </form>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
-import styles from './Modal.module.css';
 
+import styles from '@/app/Modals/Modal.module.css'
 export default function ModalDoacoes({ doacao, onClose }) {
   if (!doacao) return null;
 

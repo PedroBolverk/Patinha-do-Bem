@@ -1,15 +1,16 @@
-'use client'
-import { useState, useEffect, useRef } from "react";
+'use client';
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import styles from "./style.module.css"; // use o novo módulo CSS
+import styles from "./style.module.css";
 import CadastrarEvento from "../components/ButtonCadastroEvento/buttonCadastrarEvento";
+import ModalEventos from "../Modals/Eventos/modalEventos";
 
 export default function EventosPage() {
   const [eventos, setEventos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const inputFileRef = useRef(null);
+  const [selecionada, setSelecionada] = useState(null);
 
   useEffect(() => {
     fetch("/api/eventos")
@@ -43,18 +44,19 @@ export default function EventosPage() {
       ) : (
         <div className={styles.grid}>
           {eventos.map((evento) => (
-            <div key={evento.id} className={styles.card}>
+            <div
+              key={evento.id}
+              className={styles.card}
+              onClick={() => setSelecionada(evento)}
+            >
               <div className={styles.imageWrapper}>
                 <Image
-                  src={evento.imagem || "/default-image.jpg"} // certifique-se de ter essa imagem em /public/
+                  src={evento.imagem || "/default-image.jpg"}
                   alt={`Imagem do evento ${evento.titulo}`}
                   width={300}
                   height={180}
                   className={styles.image}
                 />
-                <div className={styles.date}>
-                  {new Date(evento.dataIni).getDate()}
-                </div>
               </div>
               <div className={styles.body}>
                 <h3 className={styles.title}>{evento.titulo}</h3>
@@ -64,6 +66,8 @@ export default function EventosPage() {
           ))}
         </div>
       )}
+
+      <ModalEventos eventos={selecionada} onClose={() => setSelecionada(null)} />
     </div>
   );
 }

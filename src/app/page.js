@@ -1,5 +1,5 @@
-import { CardHome } from "./components/CardPost";
-import { CardsEvents } from "./components/CardsEventos";
+import HomePage from "./pages/HomePage";
+
 import logger from "./logger";
 
 async function fetchDoacoes() {
@@ -24,8 +24,7 @@ export default async function Home() {
 
   return (
     <main>
-      <CardHome />
-      <CardsEvents/>     
+      <HomePage />   
     </main>
   );
 }

@@ -1,7 +1,8 @@
 
 import './globals.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import  Header  from './components/Header';
-import { CardsEvents } from './components/CardsEventos';
+
 import {Gabarito} from 'next/font/google'
 
 const prompt = Gabarito({

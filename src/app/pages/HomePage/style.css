@@ -1,0 +1,195 @@
+.HeroCardUnified {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1100px;
+  margin: 2rem auto;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.HeroContentEsquerda {
+  flex: 1;
+  text-align: left;
+  padding-right: 2rem;
+}
+
+.HeroImageDireita {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.HeroImageContent {
+  max-width: 100%;
+  height: auto;
+}
+
+.HeroCardUnified .Titulo {
+  font-size: 42px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 1rem;
+  font-family: "Gabarito", sans-serif;
+}
+
+.HeroCardUnified .Subtitulo {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-family: "Brawler", serif;
+}
+
+.HeroCardUnified .BotaoDoar {
+  font-size: 18px;
+  padding: 12px 28px;
+  background-color: #41B273;
+  color: white;
+  border: none;
+  border-radius: 28px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.HeroCardUnified .BotaoDoar:hover {
+  transform: scale(1.05);
+}
+
+.Container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+.ContentGrupo,
+.Missao,
+.Adocao {
+  flex: 1 1 280px;
+  max-width: 360px;
+  margin-bottom: 2rem;
+}
+
+.ContentEventos {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.ContentEventos:hover {
+  transform: translateY(-2px);
+}
+
+.TituloEvento {
+  font-size: 15px;
+  color: #333;
+}
+
+.Eventos {
+  font-size: 22px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.Missao {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.EventosMissaoContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.Missao h2 {
+  font-size: 15px;
+  font-weight: 400;
+  color: #444;
+  line-height: 1.5;
+}
+
+.MissaoAdocaoWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 1;
+  max-width: 360px;
+}
+
+.AdocaoImg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .HeroCardUnified {
+    padding: 2rem 1rem;
+    border-radius: 16px;
+  }
+
+  .HeroCardUnified .Titulo {
+    font-size: 28px;
+  }
+
+  .HeroCardUnified .Subtitulo {
+    font-size: 14px;
+  }
+
+  .HeroCardUnified .BotaoDoar {
+    font-size: 15px;
+    padding: 10px 22px;
+  }
+
+  .Container {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .ContentEventos {
+    flex-direction: row;
+    text-align: center;
+  }
+
+  .TituloEvento {
+    font-size: 14px;
+  }
+
+   .MissaoAdocaoWrapper {
+    flex-direction: column;
+  }
+
+  .Adocao {
+    order: 1;
+  }
+.Missao {
+    order: 2;
+  }
+  .Missao h2 {
+    font-size: 14px;
+  }
+
+  .Eventos {
+    font-size: 20px;
+  }
+}
