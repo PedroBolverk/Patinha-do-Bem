@@ -55,6 +55,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s ease;
+  
 }
 
 .HeroCardUnified .BotaoDoar:hover {
@@ -67,6 +68,7 @@
   justify-content: space-around;
   gap: 2rem;
   padding: 0 1rem;
+  text-align: center;
 }
 
 .ContentGrupo,
@@ -75,6 +77,7 @@
   flex: 1 1 280px;
   max-width: 360px;
   margin-bottom: 2rem;
+  margin: 0 auto;
 }
 
 .ContentEventos {
@@ -116,8 +119,31 @@
   gap: 2rem;
   flex-wrap: wrap;
   width: 100%;
+  
 }
 
+.TodosEventos {
+  text-decoration: none;
+   font-size: 18px;
+  padding: 12px 28px;
+  background-color: #41B273;
+  color: white;
+  border: none;
+  border-radius: 28px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+  margin-top: 20px;
+}
+
+.TodosEventos:hover{
+  transform: scale(1.05);
+}
+
+.Link{
+  text-decoration: none;
+  color: white;
+}
 .Missao h2 {
   font-size: 15px;
   font-weight: 400;
@@ -158,6 +184,7 @@
   .HeroCardUnified .BotaoDoar {
     font-size: 15px;
     padding: 10px 22px;
+    
   }
 
   .Container {

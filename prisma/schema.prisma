@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 datasource db {
@@ -15,11 +14,14 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   name     String
-  username String   @unique
+  username String @unique
+  email    String @unique
+  password String
+
   // Events   Events[]
-  Post     Post[]
+  Post Post[]
 }
 
 model Post {
@@ -35,16 +37,17 @@ model Post {
 }
 
 model Events {
-  @@map("events") // Nome da tabela no banco de dados (em minúsculas)
-  id            Int      @id @default(autoincrement())
-  titulo        String
-  descricao     String
-  dataIni       DateTime @default(now())
-  dataFim       DateTime @default(now())
-  local         String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  imagem        String?
+  id        Int      @id @default(autoincrement())
+  titulo    String
+  descricao String
+  dataIni   DateTime @default(now())
+  dataFim   DateTime @default(now())
+  local     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  imagem    String?
   // organizadorId Int
   // organizador   User     @relation(fields: [organizadorId], references: [id])
+
+  @@map("events") // Nome da tabela no banco de dados (em minúsculas)
 }

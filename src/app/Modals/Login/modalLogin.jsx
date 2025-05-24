@@ -1,0 +1,79 @@
+'use client';
+import { useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+
+export default function LoginModal({ show, handleClose, openRegister }) {
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCredentials(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleLogin = async () => {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+    });
+
+    if (res.ok) {
+    const data = await res.json();
+
+    // Para salvar o nome do usuário
+    localStorage.setItem('username', data.name); 
+
+    alert('Login realizado com sucesso');
+    handleClose();
+  } else {
+    alert('Credenciais inválidas');
+  }
+};
+
+  return (
+    <Modal show={show} onHide={handleClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Login</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Form.Group controlId="formEmail">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Digite seu email"
+              name="email"
+              value={credentials.email}
+              onChange={handleChange}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formPassword" className="mt-3">
+            <Form.Label>Senha</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Senha"
+              name="password"
+              value={credentials.password}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Form>
+        <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+          <p>Não tem uma conta?{' '}
+            <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+              handleClose();
+              openRegister();
+            }}>
+              Cadastre-se
+            </span>
+          </p>
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
+        <Button variant="primary" onClick={handleLogin}>Entrar</Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}

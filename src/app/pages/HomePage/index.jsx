@@ -38,7 +38,9 @@ export default function HomePage() {
           <h2 className="Subtitulo">
             Junte-se a nós e faça a diferença na vida de animais necessitados
           </h2>
-          <button className="BotaoDoar">Doar Agora</button>
+          <button className='TodosEventos'>
+          <Link className='Link' href="/PageDoacoes">Doar Agora</Link>
+        </button>
         </div>
         <div className="HeroImageDireita">
           <Image src={caoegato} alt="Cão e Gato" className="HeroImageContent" />
@@ -75,9 +77,9 @@ export default function HomePage() {
               )}
             </div>
           ))}
-
-          <Link href="/PageEventos">Ver Todos</Link>
-        </div>
+          <button className='TodosEventos'>
+          <Link className='Link' href="/PageEventos">Ver Todos</Link>
+        </button></div>
         
 
         {/* Missão + Adoção em bloco separado */}
