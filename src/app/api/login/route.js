@@ -10,16 +10,23 @@ export async function POST(req) {
     where: { email },
   });
 
-  if (!user || !await bcrypt.compare(password, user.password)) {
+  if (!user || !(await bcrypt.compare(password, user.password))) {
     return new Response(JSON.stringify({ error: 'Credenciais inválidas' }), {
       status: 401,
     });
   }
 
-  return new Response(JSON.stringify({ name: user.name, id: user.id }), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json'
+  return new Response(
+    JSON.stringify({
+      name: user.name,
+      id: user.id,
+      image: user.image || null // adiciona a imagem
+    }),
+    {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }
-  });
+  );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from '@/app/components/Header/style.module.css';
@@ -14,12 +14,19 @@ export default function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [username, setUsername] = useState(null);
+  const [userImage, setUserImage] = useState(null);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
+    const storedImage = localStorage.getItem('userImage');
+
     if (storedUsername) {
       setUsername(storedUsername);
     }
+    if (storedImage) {
+      setUserImage(storedImage);
+    }
+
   }, []);
 
   return (
@@ -49,10 +56,12 @@ export default function Header() {
           {username ? (
             <div className={styles.HeaderLink} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
               <span>Olá, {username.split(' ')[0]}</span>
-              <span
+              <span 
                 style={{ cursor: 'pointer', color: 'red' }}
                 onClick={() => {
-                  localStorage.removeItem('username'); // limpa o nome salvo
+                  localStorage.removeItem('username');
+                  localStorage.removeItem('userImage');
+                  setUserImage(null); // limpa o nome salvo
                   setUsername(null); // atualiza o estado para remover o nome do header
                 }}
               >
@@ -69,7 +78,17 @@ export default function Header() {
             </span>
           )}
 
-          <Image className={styles.LogoLogin} src={Login} alt="Ícone de Login" />
+          <div className={styles.ImageWrapper}>
+            <Image
+              src={userImage || Login}
+              alt="Ícone de Login"
+              fill
+              sizes="(max-width: 768px) 32px, 40px"
+              className={styles.LogoLogin}
+              style={{ objectFit: 'cover' }}
+            />
+          </div>
+
         </nav>
       </div>
 
@@ -79,7 +98,9 @@ export default function Header() {
         handleClose={() => {
           setShowLogin(false);
           const storedUsername = localStorage.getItem('username');
+          const storedImage = localStorage.getItem('userImage');
           if (storedUsername) setUsername(storedUsername);
+          if (storedImage) setUserImage(storedImage);
         }}
         openRegister={() => {
           setShowLogin(false);

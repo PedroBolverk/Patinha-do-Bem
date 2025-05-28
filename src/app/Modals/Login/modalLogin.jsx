@@ -11,24 +11,35 @@ export default function LoginModal({ show, handleClose, openRegister }) {
   };
 
   const handleLogin = async () => {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-    });
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+      });
 
-    if (res.ok) {
-    const data = await res.json();
+      if (res.ok) {
+        const data = await res.json();
 
-    // Para salvar o nome do usuário
-    localStorage.setItem('username', data.name); 
+        if (data.name) {
+          localStorage.setItem('username', data.name);
+        }
 
-    alert('Login realizado com sucesso');
-    handleClose();
-  } else {
-    alert('Credenciais inválidas');
-  }
-};
+        if (data.image) {
+          localStorage.setItem('userImage', encodeURI(data.image));
+        }
+
+        alert('Login realizado com sucesso');
+        handleClose();
+      } else {
+        const error = await res.json();
+        alert(error.error || 'Credenciais inválidas');
+      }
+    } catch (err) {
+      console.error('Erro no login:', err);
+      alert('Erro ao realizar login');
+    }
+  };
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -59,12 +70,17 @@ export default function LoginModal({ show, handleClose, openRegister }) {
             />
           </Form.Group>
         </Form>
+
         <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-          <p>Não tem uma conta?{' '}
-            <span style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
-              handleClose();
-              openRegister();
-            }}>
+          <p>
+            Não tem uma conta?{' '}
+            <span
+              style={{ cursor: 'pointer', color: 'blue' }}
+              onClick={() => {
+                handleClose();
+                openRegister();
+              }}
+            >
               Cadastre-se
             </span>
           </p>

@@ -8,6 +8,34 @@
   z-index: 1000;
 }
 
+.rightColumn {
+  flex: 1;
+  text-align: center;
+}
+
+.uploadContainer {
+ 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: inline-block;
+}
+
+.imagePreview {
+  max-width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-top: 1rem;
+  cursor: pointer;
+  
+}
+
+.icone:hover{
+  transform: translateY(-5px) scale(1.15);
+  transition: 0.8s;
+  cursor: pointer;
+
+}
+
 .modal {
   background: white;
   padding: 2rem;

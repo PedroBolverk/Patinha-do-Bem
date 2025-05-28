@@ -18,12 +18,14 @@
   height: 48px;
   margin-right: 10px;
 }
-.LogoLogin{
-    width: 38px;
-  height: 40px;
-  margin-right: 10px;
+.LogoLogin {
+  object-fit: cover;
+  cursor: pointer;
 }
-
+.ImageWrapper:hover{
+  transform: scale(1.1);
+  transition: calc(0.8s);
+}
 .TitleHeader{
   color: black;
   font-size: 24px;
@@ -32,6 +34,13 @@
   word-wrap: break-word;
 }
 
+.ImageWrapper {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+}
 
 .HeaderLink{
   color: black;
@@ -64,6 +73,7 @@
   z-index: 1000;
   max-width: 100%;
   box-sizing: border-box;
+  background-color: white; 
 }
 
 

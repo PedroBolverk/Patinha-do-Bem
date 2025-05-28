@@ -2,7 +2,8 @@
 
 import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
-import IconeUpload from '@/app/PageEventos/iconUpload.png'; // ajuste conforme seu projeto
+import IconeUpload from '@/app/PageEventos/iconUpload.png';
+import styles from './style.module.css'
 
 export default function ModalEventos({ eventos, onClose }) {
   const inputFileRef = useRef(null);
@@ -16,29 +17,29 @@ export default function ModalEventos({ eventos, onClose }) {
   if (!eventos) return null;
 
   return (
-    <div onClick={onClose} style={overlayStyle}>
-      <div onClick={(e) => e.stopPropagation()} style={modalStyle}>
-        <button onClick={onClose} style={closeButtonStyle}>×</button>
+    <div onClick={onClose} className={styles.overlay}>
+      <div onClick={(e) => e.stopPropagation()} className={styles.modalStyle}>
+        <button onClick={onClose} className={styles.closeButton}>x</button>
 
-        <div style={contentContainer}>
-          {/* Lado Esquerdo - Informações */}
-          <div style={infoStyle}>
+        <div className={styles.contentContainer}>
+         {/* Info */}
+          <div className={styles.info}>
             <h2 style={{ marginTop: 0 }}>{eventos.titulo}</h2>
             <p><strong>Descrição:</strong> {eventos.descricao}</p>
             <p><strong>Local:</strong> {eventos.local}</p>
             <p><strong>Data:</strong> {new Date(eventos.dataIni).toLocaleDateString('pt-BR')} até {new Date(eventos.dataFim).toLocaleDateString('pt-BR')}</p>
 
-            <button style={buttonStyle}>Participar</button>
+            <button className={styles.button}>Participar</button>
           </div>
 
-          {/* Lado Direito - Imagem */}
-          <div style={imageContainer}>
+         {/* Image */}
+          <div className={styles.imageContainer}>
             <Image
               src={eventos.imagem || IconeUpload}
               alt={`Imagem do evento ${eventos.titulo}`}
               width={300}
               height={300}
-              style={{ objectFit: 'cover', borderRadius: '10px' }}
+              className={styles.image}
             />
           </div>
         </div>
@@ -47,65 +48,3 @@ export default function ModalEventos({ eventos, onClose }) {
   );
 }
 
-// Estilização
-const overlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0,0,0,0.5)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  zIndex: 1000,
-};
-
-const modalStyle = {
-  backgroundColor: 'white',
-  padding: '2rem',
-  borderRadius: '12px',
-  width: '90%',
-  maxWidth: '800px',
-  maxHeight: '90vh',
-  overflowY: 'auto',
-  position: 'relative',
-  display: 'flex',
-  flexDirection: 'column',
-};
-
-const closeButtonStyle = {
-  position: 'absolute',
-  top: '10px',
-  right: '10px',
-  fontSize: '1.5rem',
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer',
-};
-
-const contentContainer = {
-  display: 'flex',
-  flexDirection: 'row',
-  gap: '2rem',
-  alignItems: 'flex-start',
-};
-
-const infoStyle = {
-  flex: 1,
-};
-
-const imageContainer = {
-  flexShrink: 0,
-};
-
-const buttonStyle = {
-  marginTop: '1.5rem',
-  padding: '0.6rem 1.2rem',
-  backgroundColor: '#00bfa6',
-  color: 'white',
-  border: 'none',
-  borderRadius: '6px',
-  cursor: 'pointer',
-  fontWeight: 'bold',
-};
