@@ -1,9 +1,16 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { writeFile } from 'fs/promises';
-import path from 'path';
+import cloudinary from '../../../../lib/cloudinary'; // ajuste o caminho conforme seu projeto
+import { Readable } from 'stream';
 
 const prisma = new PrismaClient();
+
+function bufferToStream(buffer) {
+  const stream = new Readable();
+  stream.push(buffer);
+  stream.push(null);
+  return stream;
+}
 
 export async function POST(req) {
   try {
@@ -22,9 +29,7 @@ export async function POST(req) {
       });
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
 
     if (existingUser) {
       return new Response(JSON.stringify({ error: 'Usuário já existe' }), {
@@ -36,14 +41,19 @@ export async function POST(req) {
     let imageUrl = null;
 
     if (file && typeof file.name === 'string') {
-      const originalName = file.name.replace(/\s+/g, '-');
-      const fileName = `${Date.now()}-${originalName}`;
-      const filePath = path.join(process.cwd(), 'public/uploads', fileName);
-
       const buffer = Buffer.from(await file.arrayBuffer());
-      await writeFile(filePath, buffer);
 
-      imageUrl = `/uploads/${fileName}`;
+      // Upload com stream para Cloudinary
+      imageUrl = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: 'users' },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result.secure_url);
+          }
+        );
+        bufferToStream(buffer).pipe(uploadStream);
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);

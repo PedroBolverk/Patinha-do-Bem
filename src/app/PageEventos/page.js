@@ -48,6 +48,11 @@ export default function EventosPage() {
               key={evento.id}
               className={styles.card}
               onClick={() => setSelecionada(evento)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") setSelecionada(evento);
+              }}
             >
               <div className={styles.imageWrapper}>
                 <Image
@@ -56,6 +61,7 @@ export default function EventosPage() {
                   width={300}
                   height={180}
                   className={styles.image}
+                  unoptimized={evento.imagem ? false : true} 
                 />
               </div>
               <div className={styles.body}>
@@ -67,7 +73,9 @@ export default function EventosPage() {
         </div>
       )}
 
-      <ModalEventos eventos={selecionada} onClose={() => setSelecionada(null)} />
+      {selecionada && (
+        <ModalEventos eventos={selecionada} onClose={() => setSelecionada(null)} />
+      )}
     </div>
   );
 }

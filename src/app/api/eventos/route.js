@@ -1,8 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import AsyncRetry from "async-retry";
-import { writeFile } from "fs/promises";
+import cloudinary from "../../../../lib/cloudinary";
+import { Readable } from "stream";
 
 const prisma = new PrismaClient();
+
+function bufferToStream(buffer) {
+  const stream = new Readable();
+  stream.push(buffer);
+  stream.push(null);
+  return stream;
+}
 
 export async function GET() {
   try {
@@ -34,17 +42,23 @@ export async function POST(request) {
     const dataIni = formData.get('dataIni');
     const dataFim = formData.get('dataFim');
     const local = formData.get('local');
-    const imagem = formData.get('imagem'); // objeto File
+    const imagem = formData.get('imagem');
 
     let imagePath = null;
 
     if (imagem && typeof imagem.name === 'string') {
       const buffer = Buffer.from(await imagem.arrayBuffer());
-      const fileName = `evento-${Date.now()}-${imagem.name}`;
-      const filePath = `./public/uploads/${fileName}`;
 
-      await writeFile(filePath, buffer);
-      imagePath = `/uploads/${fileName}`;
+      imagePath = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: 'eventos' },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result.secure_url);
+          }
+        );
+        bufferToStream(buffer).pipe(uploadStream);
+      });
     }
 
     const novoEvento = await AsyncRetry(async () => {
@@ -55,7 +69,7 @@ export async function POST(request) {
           dataIni: new Date(dataIni),
           dataFim: new Date(dataFim),
           local: String(local),
-          imagem: imagePath ?? '', // garante string mesmo se null
+          imagem: imagePath ?? '', // guarda a URL da imagem ou string vazia
         },
       });
     }, {

@@ -15,6 +15,7 @@ export default function RegisterModal({ show, handleClose, openLogin }) {
     email: '',
     password: '',
   });
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
