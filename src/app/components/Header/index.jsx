@@ -61,8 +61,8 @@ export default function Header() {
                 onClick={() => {
                   localStorage.removeItem('username');
                   localStorage.removeItem('userImage');
-                  setUserImage(null); // limpa o nome salvo
-                  setUsername(null); // atualiza o estado para remover o nome do header
+                  setUserImage(null);
+                  setUsername(null);
                 }}
               >
                 Sair

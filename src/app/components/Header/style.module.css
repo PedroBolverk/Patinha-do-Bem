@@ -91,7 +91,6 @@
   cursor: pointer;
 }
 
-/* Responsivo */
 @media (max-width: 768px) {
   .StyledHeader {
     flex-direction: row;
@@ -136,6 +135,8 @@ text-align: center;
 
   .ShowMenu {
     display: flex;
+   flex-direction: column-reverse;
+    
   }
 
   .HeaderLink,
@@ -148,7 +149,4 @@ text-align: center;
     text-decoration: none;
   }
 
-  .LogoLogin {
-    display: none;
-  }
 }
