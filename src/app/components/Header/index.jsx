@@ -79,12 +79,14 @@ export default function Header() {
               style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}
             >
               <span>Olá, {username.split(' ')[0]}</span>
-              <span
+              
+              <Link className={styles.HeaderLink} href='/'><span
                 style={{ cursor: 'pointer', color: 'red' }}
                 onClick={handleLogout}
               >
                 Sair
               </span>
+              </Link>
             </div>
           ) : (
             <span
