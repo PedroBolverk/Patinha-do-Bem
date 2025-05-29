@@ -69,6 +69,7 @@ export default function Painel() {
             <th>Valor</th>
             <th>Evento</th>
             <th>Data do Evento</th>
+            <th>Local</th>
             <th>Participante</th>
             <th>Email</th>
             <th>Status</th>
@@ -76,15 +77,18 @@ export default function Painel() {
           </tr>
         </thead>
         <tbody>
-          <tr>
+          {eventos.map(evento => (
+          <tr key={evento.id}>
             <td>Free</td>
-            <td>Exames Grátis</td>
-            <td>03/05/2025</td>
+            <td style={{ marginTop: 0 }}>{evento.titulo}</td>
+            <td>{new Date(evento.dataIni).toLocaleDateString('pt-BR')} até {new Date(evento.dataFim).toLocaleDateString('pt-BR')}</td>
+            <td>{evento.local}</td>
             <td>Carlos</td>
             <td>teste@email.com.br</td>
             <td>Confirmado</td>
             <td>03/05/2025</td>
           </tr>
+          ))}
         </tbody>
       </Table>
     </div>
