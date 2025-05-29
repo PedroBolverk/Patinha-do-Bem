@@ -1,9 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import AsyncRetry from "async-retry";
 import cloudinary from "../../../../lib/cloudinary";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/routes";
 import { Readable } from "stream";
+import prisma from "../../../../lib/prisma";
 
-const prisma = new PrismaClient();
 
 function bufferToStream(buffer) {
   const stream = new Readable();
@@ -12,10 +13,16 @@ function bufferToStream(buffer) {
   return stream;
 }
 
-export async function GET() {
+export async function GET(request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    const whereClause = userId ? { organizadorId: Number(userId) } : {};
+
     const eventos = await AsyncRetry(async () => {
       return await prisma.events.findMany({
+        where: whereClause,
         orderBy: { dataIni: 'asc' },
       });
     }, {
@@ -35,6 +42,13 @@ export async function GET() {
 
 export async function POST(request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');  // <-- Pegue userId da query (exemplo simples)
+
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Usuário não autenticado' }), { status: 401 });
+    }
+
     const formData = await request.formData();
 
     const titulo = formData.get('titulo');
@@ -69,7 +83,8 @@ export async function POST(request) {
           dataIni: new Date(dataIni),
           dataFim: new Date(dataFim),
           local: String(local),
-          imagem: imagePath ?? '', // guarda a URL da imagem ou string vazia
+          imagem: imagePath ?? '',
+          organizadorId: Number(userId),
         },
       });
     }, {

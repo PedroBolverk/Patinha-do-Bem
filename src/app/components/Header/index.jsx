@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from '@/app/components/Header/style.module.css';
@@ -15,19 +15,36 @@ export default function Header() {
   const [showRegister, setShowRegister] = useState(false);
   const [username, setUsername] = useState(null);
   const [userImage, setUserImage] = useState(null);
+  const [userRole, setUserRole] = useState(null);
 
-  useEffect(() => {
+  function updateUser() {
     const storedUsername = localStorage.getItem('username');
     const storedImage = localStorage.getItem('userImage');
+    const storedUserRole = localStorage.getItem('userRole');
 
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
-    if (storedImage) {
-      setUserImage(storedImage);
-    }
+    setUsername(storedUsername || null);
+    setUserImage(storedImage || null);
+    setUserRole(storedUserRole || null);
 
+    // Dispara evento para avisar que userRole pode ter mudado
+    window.dispatchEvent(new Event('userRoleChanged'));
+  }
+
+  useEffect(() => {
+    updateUser();
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('username');
+    localStorage.removeItem('userImage');
+    localStorage.removeItem('userRole');
+
+    setUsername(null);
+    setUserImage(null);
+    setUserRole(null);
+
+    window.dispatchEvent(new Event('userRoleChanged'));
+  };
 
   return (
     <>
@@ -52,18 +69,19 @@ export default function Header() {
             <span className={styles.HeaderLink}>Doações</span>
           </Link>
 
+          {userRole === 'ORGANIZADOR' && (
+            <Link href="/PagePainel" className={styles.HeaderLink}>Painel</Link>
+          )}
 
           {username ? (
-            <div className={styles.HeaderLink} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <div
+              className={styles.HeaderLink}
+              style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}
+            >
               <span>Olá, {username.split(' ')[0]}</span>
-              <span 
+              <span
                 style={{ cursor: 'pointer', color: 'red' }}
-                onClick={() => {
-                  localStorage.removeItem('username');
-                  localStorage.removeItem('userImage');
-                  setUserImage(null);
-                  setUsername(null);
-                }}
+                onClick={handleLogout}
               >
                 Sair
               </span>
@@ -88,24 +106,20 @@ export default function Header() {
               style={{ objectFit: 'cover' }}
             />
           </div>
-
         </nav>
       </div>
-
 
       <LoginModal
         show={showLogin}
         handleClose={() => {
           setShowLogin(false);
-          const storedUsername = localStorage.getItem('username');
-          const storedImage = localStorage.getItem('userImage');
-          if (storedUsername) setUsername(storedUsername);
-          if (storedImage) setUserImage(storedImage);
+          updateUser();
         }}
         openRegister={() => {
           setShowLogin(false);
           setShowRegister(true);
         }}
+        onLoginSuccess={updateUser}
       />
 
       <RegisterModal

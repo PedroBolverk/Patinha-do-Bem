@@ -13,16 +13,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  ORGANIZADOR 
+  COMUM
+}
+
 model User {
   id       Int     @id @default(autoincrement())
   name     String
   username String  @unique
+  role Role @default(COMUM)
   email    String  @unique
   password String
   image    String?
 
+  
+
   // Events   Events[]
   Post Post[]
+  events   Events[]  @relation("OrganizadorEvents")
 }
 
 model Post {
@@ -47,8 +57,9 @@ model Events {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   imagem    String?
-  // organizadorId Int
-  // organizador   User     @relation(fields: [organizadorId], references: [id])
+
+  organizadorId Int?  // opcional
+organizador   User? @relation("OrganizadorEvents", fields: [organizadorId], references: [id])
 
   @@map("events") // Nome da tabela no banco de dados (em minúsculas)
 }

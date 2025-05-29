@@ -21,9 +21,18 @@ export async function POST(req) {
     const email = formData.get('email');
     const password = formData.get('password');
     const file = formData.get('imagem');
+    const rawRole = formData.get('role');
+    const role = rawRole?.toString().trim().toUpperCase();
 
     if (!email || !password || !name || !username) {
       return new Response(JSON.stringify({ error: 'Campos obrigatórios faltando' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (role !== 'ORGANIZADOR' && role !== 'COMUM') {
+      return new Response(JSON.stringify({ error: 'Role inválida' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -65,6 +74,7 @@ export async function POST(req) {
         email,
         password: hashedPassword,
         image: imageUrl,
+        role,
       },
     });
 

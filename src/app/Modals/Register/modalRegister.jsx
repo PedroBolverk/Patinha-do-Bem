@@ -14,8 +14,9 @@ export default function RegisterModal({ show, handleClose, openLogin }) {
     username: '',
     email: '',
     password: '',
+    role: 'COMUM',
   });
-  
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,7 +57,7 @@ export default function RegisterModal({ show, handleClose, openLogin }) {
         const data = await res.json();
 
         if (data.imageUrl) {
-     
+
           localStorage.setItem('userImage', encodeURI(data.imageUrl));
         }
 
@@ -81,6 +82,16 @@ export default function RegisterModal({ show, handleClose, openLogin }) {
       </Modal.Header>
       <Modal.Body>
         <Form>
+          <Form.Label>Tipo de Usuário</Form.Label>
+          <Form.Select
+            aria-label="Default select example"
+            name='role'
+            value={formData.role}
+            onChange={e => setFormData(prev => ({ ...prev, role: e.target.value }))}
+          >
+            <option value='COMUM'>Comum</option>
+            <option value='ORGANIZADOR'>Organizador</option>
+          </Form.Select>
           <Form.Group>
             <Form.Label>Nome</Form.Label>
             <Form.Control

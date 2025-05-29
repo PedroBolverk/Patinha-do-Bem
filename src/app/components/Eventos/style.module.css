@@ -1,0 +1,41 @@
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  position: relative;
+  cursor: pointer;
+}
+.card:hover{
+  transform: scale(1.05);
+  transition: 0.8s;
+}
+
+.imageWrapper {
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 1/1; /*Proporção 1:1*/
+  object-fit: cover;
+  object-position: center center;
+  border-radius: 8px;
+  display: block;
+}
+
+.body {
+  padding: 1rem;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.desc {
+  font-size: 0.9rem;
+  color: #555;
+}

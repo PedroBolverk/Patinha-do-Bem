@@ -20,7 +20,8 @@ export async function POST(req) {
     JSON.stringify({
       name: user.name,
       id: user.id,
-      image: user.image || null // adiciona a imagem
+      image: user.image || null, // adiciona a imagem
+      role: user.role
     }),
     {
       status: 200,

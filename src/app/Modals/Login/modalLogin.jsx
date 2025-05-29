@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-export default function LoginModal({ show, handleClose, openRegister }) {
+export default function LoginModal({ show, handleClose, openRegister, onLoginSuccess }) {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
 
   const handleChange = (e) => {
@@ -28,6 +28,13 @@ export default function LoginModal({ show, handleClose, openRegister }) {
         if (data.image) {
           localStorage.setItem('userImage', encodeURI(data.image));
         }
+        if (data.id) {
+          localStorage.setItem('userId', data.id.toString());
+        }
+        if (data.role) {
+          localStorage.setItem('userRole', data.role);
+        }
+        if (onLoginSuccess) onLoginSuccess();
 
         alert('Login realizado com sucesso');
         handleClose();

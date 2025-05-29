@@ -51,7 +51,9 @@ export default function CadastrarEventoPage() {
       form.append('imagem', imageFile);
     }
 
-    const res = await fetch('/api/eventos', {
+    const userId = localStorage.getItem('userId'); // pega o userId salvo no login
+
+    const res = await fetch(`/api/eventos?userId=${userId}`, {
       method: 'POST',
       body: form,
     });
@@ -63,7 +65,6 @@ export default function CadastrarEventoPage() {
       alert('Erro ao cadastrar o evento');
     }
   }
-
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
       {/* Coluna esquerda: campos do formulário */}
