@@ -21,7 +21,8 @@ export async function POST(req) {
       name: user.name,
       id: user.id,
       image: user.image || null, // adiciona a imagem
-      role: user.role
+      role: user.role,
+      email: user.email,
     }),
     {
       status: 200,

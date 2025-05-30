@@ -8,23 +8,39 @@ import EventoCard from '../components/Eventos/CardEventos';
 export default function Painel() {
   const [eventos, setEventos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [partici, setParticipacoes] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     if (!userId) {
       setEventos([]);
+      setParticipacoes([]);
       setLoading(false);
       return;
     }
 
+    // 🔹 Fetch dos eventos do organizador
     fetch(`/api/eventos?userId=${userId}`)
       .then(res => {
         if (!res.ok) throw new Error('Erro ao buscar eventos');
         return res.json();
       })
       .then(data => {
-        setEventos(data);
+        setEventos(data); // ← eventos que ele criou
+      })
+      .catch(err => {
+        console.error('Erro ao carregar eventos', err);
+      });
+
+    // 🔹 Fetch das participações
+    fetch('/api/participacoes')
+      .then(res => {
+        if (!res.ok) throw new Error('Erro ao buscar participações');
+        return res.json();
+      })
+      .then(data => {
+        setParticipacoes(data); // ← participações (tabela)
         setLoading(false);
       })
       .catch(err => {
@@ -32,6 +48,7 @@ export default function Painel() {
         setLoading(false);
       });
   }, []);
+
 
   if (loading) return <div>Carregando eventos...</div>;
   if (error) return <div>{error}</div>;
@@ -48,9 +65,9 @@ export default function Painel() {
       {eventos.length === 0 ? (
         <p>Nenhum evento encontrado.</p>
       ) : (
-       <div className={styles.grid}>
+        <div className={styles.grid}>
           {eventos.map((evento) => (
-           <EventoCard key={evento.id} evento={evento}/>
+            <EventoCard key={evento.id} evento={evento} />
           ))}
         </div>
       )}
@@ -77,17 +94,21 @@ export default function Painel() {
           </tr>
         </thead>
         <tbody>
-          {eventos.map(evento => (
-          <tr key={evento.id}>
-            <td>Free</td>
-            <td style={{ marginTop: 0 }}>{evento.titulo}</td>
-            <td>{new Date(evento.dataIni).toLocaleDateString('pt-BR')} até {new Date(evento.dataFim).toLocaleDateString('pt-BR')}</td>
-            <td>{evento.local}</td>
-            <td>Carlos</td>
-            <td>teste@email.com.br</td>
-            <td>Confirmado</td>
-            <td>03/05/2025</td>
-          </tr>
+          {partici.map((participacao) => (
+            <tr key={participacao.id}>
+              <td>Free</td>
+              <td>{participacao.evento?.titulo || 'Evento não encontrado'}</td>
+              <td>
+                {participacao.evento?.dataIni
+                  ? `${new Date(participacao.evento.dataIni).toLocaleDateString('pt-BR')} até ${new Date(participacao.evento.dataFim).toLocaleDateString('pt-BR')}`
+                  : 'Data não disponível'}
+              </td>
+              <td>{participacao.evento?.local || 'Local não informado'}</td>
+              <td>{participacao.nome}</td>
+              <td>{participacao.email}</td>
+              <td>Confirmado</td>
+              <td>{new Date(participacao.dataHora).toLocaleString('pt-BR')}</td>
+            </tr>
           ))}
         </tbody>
       </Table>

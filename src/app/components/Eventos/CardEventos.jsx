@@ -1,6 +1,5 @@
 import Image from "next/image";
-import styles from './style.module.css' // Crie um CSS module próprio para o card, ou reutilize o seu styles.module.css
-
+import styles from './style.module.css'
 export default function EventoCard({ evento, onSelect }) {
   return (
     <div

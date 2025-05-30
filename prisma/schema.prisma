@@ -58,8 +58,22 @@ model Events {
   updatedAt DateTime @updatedAt
   imagem    String?
 
-  organizadorId Int?  // opcional
-organizador   User? @relation("OrganizadorEvents", fields: [organizadorId], references: [id])
+  organizadorId Int?
+  organizador   User? @relation("OrganizadorEvents", fields: [organizadorId], references: [id])
 
-  @@map("events") // Nome da tabela no banco de dados (em minúsculas)
+  participacoes Participacao[] 
+
+  @@map("events")
 }
+
+
+model Participacao {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String?
+  eventoId  Int
+  evento    Events   @relation(fields: [eventoId], references: [id])
+  dataHora  DateTime @default(now())
+}
+
+

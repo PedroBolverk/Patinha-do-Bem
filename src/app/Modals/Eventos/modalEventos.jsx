@@ -6,9 +6,14 @@ import IconeUpload from '@/app/PageEventos/iconUpload.png';
 import styles from './style.module.css';
 
 function getCookie(name) {
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  return match ? match[2] : null;
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    const [key, value] = cookie.trim().split('=');
+    if (key === name) return value;
+  }
+  return null;
 }
+
 
 export default function ModalEventos({ eventos, onClose }) {
   const inputFileRef = useRef(null);
@@ -22,18 +27,37 @@ export default function ModalEventos({ eventos, onClose }) {
 
   if (!eventos) return null;
 
-  const handleParticipar = () => {
+  const handleParticipar = async () => {
     const isLoggedIn = getCookie('isLoggedIn') === 'true';
-
-    if (!isLoggedIn) {
+    const nome = localStorage.getItem('username');
+    const email = localStorage.getItem('userEmail'); // ← garante que o e-mail é capturado
+console.log({ isLoggedIn, nome, email }); 
+    if (!isLoggedIn || !nome || !email) {
       alert("Você precisa estar logado para participar de eventos.");
       return;
     }
 
-    setParticipar(true);
-    setTimeout(() => {
-      onClose();
-    }, 1000);
+    try {
+      const res = await fetch('/api/participacoes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventoId: eventos.id,
+          nome,
+          email,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Erro ao registrar participação');
+
+      setParticipar(true);
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    } catch (err) {
+      console.error(err);
+      alert('Não foi possível registrar sua participação.');
+    }
   };
 
   return (
@@ -42,12 +66,15 @@ export default function ModalEventos({ eventos, onClose }) {
         <button onClick={onClose} className={styles.closeButton}>x</button>
 
         <div className={styles.contentContainer}>
-          {/* Info */}
           <div className={styles.info}>
             <h2 style={{ marginTop: 0 }}>{eventos.titulo}</h2>
             <p><strong>Descrição:</strong> {eventos.descricao}</p>
             <p><strong>Local:</strong> {eventos.local}</p>
-            <p><strong>Data:</strong> {new Date(eventos.dataIni).toLocaleDateString('pt-BR')} até {new Date(eventos.dataFim).toLocaleDateString('pt-BR')}</p>
+            <p>
+              <strong>Data:</strong>{' '}
+              {new Date(eventos.dataIni).toLocaleDateString('pt-BR')} até{' '}
+              {new Date(eventos.dataFim).toLocaleDateString('pt-BR')}
+            </p>
 
             <button
               className={`${styles.button} ${participar ? styles.confirmado : ''}`}
@@ -64,7 +91,6 @@ export default function ModalEventos({ eventos, onClose }) {
             </button>
           </div>
 
-          {/* Image */}
           <div className={styles.imageContainer}>
             <Image
               src={eventos.imagem || IconeUpload}
