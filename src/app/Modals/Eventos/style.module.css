@@ -81,5 +81,42 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
+  transition: all 0.3s ease;
 }
 
+.button:disabled {
+  /* opacity: 1.0; */
+  cursor: not-allowed;
+}
+
+.confirmado {
+  background-color: #11dd41;
+  transform: scale(1.05);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.confirmadoContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+}
+
+.checkIcon {
+  font-size: 18px;
+  animation: pop 0.3s ease forwards;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}

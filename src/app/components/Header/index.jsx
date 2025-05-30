@@ -18,6 +18,11 @@ export default function Header() {
   const [userRole, setUserRole] = useState(null);
 
   function updateUser() {
+    const cookies = document.cookie;
+const isLogged = cookies.includes('isLoggedIn=true');
+if (!isLogged) return;
+
+
     const storedUsername = localStorage.getItem('username');
     const storedImage = localStorage.getItem('userImage');
     const storedUserRole = localStorage.getItem('userRole');
@@ -26,25 +31,33 @@ export default function Header() {
     setUserImage(storedImage || null);
     setUserRole(storedUserRole || null);
 
-    // Dispara evento para avisar que userRole pode ter mudado
     window.dispatchEvent(new Event('userRoleChanged'));
   }
+
 
   useEffect(() => {
     updateUser();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('username');
-    localStorage.removeItem('userImage');
-    localStorage.removeItem('userRole');
+ const handleLogout = () => {
+  // Remove cookie corretamente
+  document.cookie = 'isLoggedIn=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
 
-    setUsername(null);
-    setUserImage(null);
-    setUserRole(null);
+  // Limpa localStorage
+  localStorage.removeItem('username');
+  localStorage.removeItem('userImage');
+  localStorage.removeItem('userRole');
 
-    window.dispatchEvent(new Event('userRoleChanged'));
-  };
+  setUsername(null);
+  setUserImage(null);
+  setUserRole(null);
+
+  window.dispatchEvent(new Event('userRoleChanged'));
+
+  // Garante atualização da interface (opcional)
+  window.location.reload();
+};
+
 
   return (
     <>
@@ -79,7 +92,7 @@ export default function Header() {
               style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}
             >
               <span>Olá, {username.split(' ')[0]}</span>
-              
+
               <Link className={styles.HeaderLink} href='/'><span
                 style={{ cursor: 'pointer', color: 'red' }}
                 onClick={handleLogout}

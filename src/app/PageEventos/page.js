@@ -7,6 +7,7 @@ import CadastrarEvento from "../components/ButtonCadastroEvento/buttonCadastrarE
 import ModalEventos from "../Modals/Eventos/modalEventos";
 import EventoCard from "../components/Eventos/CardEventos";
 
+
 export default function EventosPage() {
   const [eventos, setEventos] = useState([]);
   const [loading, setLoading] = useState(true);

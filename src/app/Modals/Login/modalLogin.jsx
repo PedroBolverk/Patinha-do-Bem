@@ -21,10 +21,13 @@ export default function LoginModal({ show, handleClose, openRegister, onLoginSuc
       if (res.ok) {
         const data = await res.json();
 
+        // Cookies — Proteção de rota via middleware
+        document.cookie = 'isLoggedIn=true; path=/'; // ✅ Aqui é o ponto chave
+
+        // localStorage — Dados visuais
         if (data.name) {
           localStorage.setItem('username', data.name);
         }
-
         if (data.image) {
           localStorage.setItem('userImage', encodeURI(data.image));
         }
@@ -34,6 +37,7 @@ export default function LoginModal({ show, handleClose, openRegister, onLoginSuc
         if (data.role) {
           localStorage.setItem('userRole', data.role);
         }
+
         if (onLoginSuccess) onLoginSuccess();
 
         alert('Login realizado com sucesso');
@@ -47,6 +51,8 @@ export default function LoginModal({ show, handleClose, openRegister, onLoginSuc
       alert('Erro ao realizar login');
     }
   };
+
+
 
   return (
     <Modal show={show} onHide={handleClose} centered>
