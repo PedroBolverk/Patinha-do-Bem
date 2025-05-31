@@ -91,16 +91,19 @@ if (!isLogged) return;
               className={styles.HeaderLink}
               style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}
             >
-              <span>Olá, {username.split(' ')[0]}</span>
+              <span><Link href="/" className={styles.HeaderLink} >Olá, {username.split(' ')[0]}</Link></span>
 
-              <Link className={styles.HeaderLink} href='/'><span
+              <span
                 style={{ cursor: 'pointer', color: 'red' }}
                 onClick={handleLogout}
               >
+                <Link href="/" className={styles.HeaderLink} >
                 Sair
+                </Link>
               </span>
-              </Link>
-            </div>
+               </div>
+             
+           
           ) : (
             <span
               className={styles.HeaderLink}

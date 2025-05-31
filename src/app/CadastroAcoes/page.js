@@ -49,7 +49,10 @@ export default function CadastrarDoacaoPage() {
       form.append('imagem', imageFile);
     }
 
-    const res = await fetch('/api/doacoes', {
+    const userId = localStorage.getItem('userId');
+
+
+    const res = await fetch( `/api/doacoes?userId=${userId}`, {
       method: 'POST',
       body: form,
     });

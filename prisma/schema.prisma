@@ -70,7 +70,7 @@ model Events {
 model Participacao {
   id        Int      @id @default(autoincrement())
   nome      String
-  email     String?
+  email     String
   eventoId  Int
   evento    Events   @relation(fields: [eventoId], references: [id])
   dataHora  DateTime @default(now())

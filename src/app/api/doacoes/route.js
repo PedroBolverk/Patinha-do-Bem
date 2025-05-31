@@ -5,17 +5,19 @@ import AsyncRetry from "async-retry";
 // Inicialize o Prisma Client aqui
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const doacoes = await AsyncRetry(async () => {
-      return await prisma.post.findMany({
-        include: { author: true }
-      });
-    }, {
-      retries: 3,
-      minTimeout: 1000,
-      maxTimeout: 5000,
-      factor: 2,
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    const doacoes = await prisma.post.findMany({
+      where: userId ? { authorId: Number(userId) } : undefined,
+      include: {
+        author: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
     });
 
     return new Response(JSON.stringify(doacoes), {
@@ -28,12 +30,21 @@ export async function GET() {
   }
 }
 
+
 export async function POST(request) {
   try {
-    const body = await request.json();
-    const { titulo, descricao, meta, name } = body;
+    const formData = await request.formData(); 
 
-    // Retry para buscar ou criar usuário
+    const titulo = formData.get('titulo');
+    const descricao = formData.get('descricao');
+    const meta = formData.get('meta');
+    const name = formData.get('name');
+    const imagem = formData.get('imagem');
+
+    if (!titulo || !descricao || !meta || !name) {
+      return new Response(JSON.stringify({ error: 'Dados obrigatórios ausentes' }), { status: 400 });
+    }
+
     const user = await AsyncRetry(async () => {
       let user = await prisma.user.findFirst({ where: { name } });
       if (!user) {
@@ -41,39 +52,30 @@ export async function POST(request) {
           data: {
             name,
             username: name.toLowerCase().replace(/\s+/g, ''),
+            email: `${name.toLowerCase().replace(/\s+/g, '')}@email.com`,
+            password: 'senha123',
           },
         });
       }
       return user;
-    }, {
-      retries: 3,
-      minTimeout: 1000,
-      maxTimeout: 5000,
-      factor: 2,
-    });
+    }, { retries: 3 });
 
-    // Retry para criar o post
-    const novaDoacao = await AsyncRetry(async () => {
-      return await prisma.post.create({
-        data: {
-          titulo,
-          descricao,
-          meta: Number(meta),
-          atual: 0,
-          authorId: user.id,
-        },
-      });
-    }, {
-      retries: 3,
-      minTimeout: 1000,
-      maxTimeout: 5000,
-      factor: 2,
+
+    const novaDoacao = await prisma.post.create({
+      data: {
+        titulo,
+        descricao,
+        meta: Number(meta),
+        atual: 0,
+        authorId: user.id,
+      },
     });
 
     return new Response(JSON.stringify(novaDoacao), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     });
+
   } catch (error) {
     console.error('Erro ao salvar doação:', error);
     return new Response(
@@ -82,6 +84,7 @@ export async function POST(request) {
     );
   }
 }
+
 
 export async function DELETE(request) {
   try {

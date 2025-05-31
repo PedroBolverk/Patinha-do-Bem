@@ -15,7 +15,7 @@ export async function POST(req) {
         eventoId: parseInt(eventoId),
         nome,
         email,
-        dataHora: new Date(), // explícito, opcional
+        dataHora: new Date(),
       },
     });
 
@@ -29,10 +29,37 @@ export async function POST(req) {
   }
 }
 
-
-export async function GET() {
+export async function GET(req) {
   try {
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('userId');
+
+    let whereClause = {};
+
+    if (userId) {
+      // Buscar IDs dos eventos criados por esse organizador
+      const eventosDoOrganizador = await prisma.events.findMany({
+        where: { organizadorId: Number(userId) },
+        select: { id: true },
+      });
+
+      const idsEventos = eventosDoOrganizador.map(e => e.id);
+
+      // Se não houver eventos, evita buscar participações desnecessárias
+      if (idsEventos.length === 0) {
+        return new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      whereClause = {
+        eventoId: { in: idsEventos },
+      };
+    }
+
     const participacoes = await prisma.participacao.findMany({
+      where: whereClause,
       orderBy: { dataHora: 'desc' },
       include: {
         evento: {
