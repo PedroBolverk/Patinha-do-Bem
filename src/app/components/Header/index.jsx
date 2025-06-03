@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from '@/app/components/Header/style.module.css';
@@ -13,51 +15,31 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [username, setUsername] = useState(null);
-  const [userImage, setUserImage] = useState(null);
-  const [userRole, setUserRole] = useState(null);
+  const router = useRouter();
 
-  function updateUser() {
-    const cookies = document.cookie;
-const isLogged = cookies.includes('isLoggedIn=true');
-if (!isLogged) return;
+  const { data: session } = useSession();
+  const user = session?.user;
 
-
-    const storedUsername = localStorage.getItem('username');
-    const storedImage = localStorage.getItem('userImage');
-    const storedUserRole = localStorage.getItem('userRole');
-
-    setUsername(storedUsername || null);
-    setUserImage(storedImage || null);
-    setUserRole(storedUserRole || null);
-
-    window.dispatchEvent(new Event('userRoleChanged'));
-  }
-
-
+  // ✅ Atualiza localStorage e cookie quando logado
   useEffect(() => {
-    updateUser();
-  }, []);
+    if (user) {
+      localStorage.setItem('username', user.name || '');
+      localStorage.setItem('userImage', user.image || '');
+      localStorage.setItem('userRole', user.role || '');
+      localStorage.setItem('userEmail', user.email || '');
+      localStorage.setItem('userId', user.id?.toString() || '');
 
- const handleLogout = () => {
-  // Remove cookie corretamente
-  document.cookie = 'isLoggedIn=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+      document.cookie = 'isLoggedIn=true; path=/';
+      window.dispatchEvent(new Event('userRoleChanged'));
+    }
+  }, [user]);
 
-  // Limpa localStorage
-  localStorage.removeItem('username');
-  localStorage.removeItem('userImage');
-  localStorage.removeItem('userRole');
-
-  setUsername(null);
-  setUserImage(null);
-  setUserRole(null);
-
-  window.dispatchEvent(new Event('userRoleChanged'));
-
-  // Garante atualização da interface (opcional)
-  window.location.reload();
-};
-
+  const handleLogout = () => {
+    // Limpa localStorage e cookie ao sair
+    localStorage.clear();
+    document.cookie = 'isLoggedIn=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+    signOut({ callbackUrl: '/' });
+  };
 
   return (
     <>
@@ -82,28 +64,27 @@ if (!isLogged) return;
             <span className={styles.HeaderLink}>Doações</span>
           </Link>
 
-          {userRole === 'ORGANIZADOR' && (
+          {user?.role === 'ORGANIZADOR' && (
             <Link href="/PagePainel" className={styles.HeaderLink}>Painel</Link>
           )}
 
-          {username ? (
+          {user ? (
             <div
               className={styles.HeaderLink}
               style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}
             >
-              <span><Link href="/" className={styles.HeaderLink} >Olá, {username.split(' ')[0]}</Link></span>
+              <span className={styles.HeaderLink}>
+                Olá, {user.name?.split(' ')[0]}
+              </span>
 
               <span
-                style={{ cursor: 'pointer', color: 'red' }}
                 onClick={handleLogout}
+                style={{ cursor: 'pointer', color: 'red' }}
+                className={styles.HeaderLink}
               >
-                <Link href="/" className={styles.HeaderLink} >
                 Sair
-                </Link>
               </span>
-               </div>
-             
-           
+            </div>
           ) : (
             <span
               className={styles.HeaderLink}
@@ -116,7 +97,7 @@ if (!isLogged) return;
 
           <div className={styles.ImageWrapper}>
             <Image
-              src={userImage || Login}
+              src={user?.image || Login}
               alt="Ícone de Login"
               fill
               sizes="(max-width: 768px) 32px, 40px"
@@ -129,15 +110,15 @@ if (!isLogged) return;
 
       <LoginModal
         show={showLogin}
-        handleClose={() => {
-          setShowLogin(false);
-          updateUser();
-        }}
+        handleClose={() => setShowLogin(false)}
         openRegister={() => {
           setShowLogin(false);
           setShowRegister(true);
         }}
-        onLoginSuccess={updateUser}
+        onLoginSuccess={() => {
+          setShowLogin(false);
+          router.refresh?.();
+        }}
       />
 
       <RegisterModal

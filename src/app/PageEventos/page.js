@@ -7,7 +7,6 @@ import CadastrarEvento from "../components/ButtonCadastroEvento/buttonCadastrarE
 import ModalEventos from "../Modals/Eventos/modalEventos";
 import EventoCard from "../components/Eventos/CardEventos";
 
-
 export default function EventosPage() {
   const [eventos, setEventos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,37 +14,35 @@ export default function EventosPage() {
   const [selecionada, setSelecionada] = useState(null);
   const [userRole, setUserRole] = useState(null);
 
-
   useEffect(() => {
-  function handleRoleChange() {
-    const storedUserRole = localStorage.getItem('userRole');
-    setUserRole(storedUserRole);
-  }
-  
-  window.addEventListener('userRoleChanged', handleRoleChange);
+    function handleRoleChange() {
+      const storedUserRole = localStorage.getItem('userRole');
+      setUserRole(storedUserRole);
+    }
 
-  handleRoleChange();
+    window.addEventListener('userRoleChanged', handleRoleChange);
 
-  fetch("/api/eventos")
-    .then((res) => {
-      if (!res.ok) throw new Error("Erro na resposta da API");
-      return res.json();
-    })
-    .then((data) => {
-      setEventos(data);
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.error("Erro ao buscar eventos", err);
-      setError("Erro ao carregar dados. Tente novamente.");
-      setLoading(false);
-    });
+    handleRoleChange();
 
-  return () => {
-    window.removeEventListener('userRoleChanged', handleRoleChange);
-  };
-}, []);
+    fetch("/api/eventos")
+      .then((res) => {
+        if (!res.ok) throw new Error("Erro na resposta da API");
+        return res.json();
+      })
+      .then((data) => {
+        setEventos(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar eventos", err);
+        setError("Erro ao carregar dados. Tente novamente.");
+        setLoading(false);
+      });
 
+    return () => {
+      window.removeEventListener('userRoleChanged', handleRoleChange);
+    };
+  }, []);
 
   if (loading) return <div>Carregando Eventos...</div>;
   if (error) return <div>{error}</div>;
@@ -57,7 +54,6 @@ export default function EventosPage() {
         {userRole === 'ORGANIZADOR' && (
           <CadastrarEvento />
         )}
-
       </div>
 
       {eventos.length === 0 ? (
@@ -65,7 +61,7 @@ export default function EventosPage() {
       ) : (
         <div className={styles.grid}>
           {eventos.map((evento) => (
-           <EventoCard key={evento.id} evento={evento} onSelect={setSelecionada}/>
+            <EventoCard key={evento.id} evento={evento} onSelect={setSelecionada} />
           ))}
         </div>
       )}

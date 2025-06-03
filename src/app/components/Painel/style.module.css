@@ -1,0 +1,67 @@
+.card {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  margin-bottom: 1rem;
+}
+
+.coluna {
+  flex: 1;
+  min-width: 150px;
+}
+
+.email {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.titulo {
+  font-weight: 600;
+  color: #333;
+}
+
+.status {
+  align-self: center;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.statusVerde {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.statusAmarelo {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.statusVermelho {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.statusCinza {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .status {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+  }
+}

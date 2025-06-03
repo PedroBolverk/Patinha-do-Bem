@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Form, InputGroup, Button } from 'react-bootstrap';
 import Image from 'next/image';
-import styles from './form.module.css'
+import styles from './form.module.css';
 import IconeUpload from '@/app/PageEventos/iconUpload.png';
 
 export default function CadastrarEventoPage() {
@@ -51,8 +51,7 @@ export default function CadastrarEventoPage() {
       form.append('imagem', imageFile);
     }
 
-    const userId = localStorage.getItem('userId'); // pega o userId salvo no login
-
+    const userId = localStorage.getItem('userId');
     const res = await fetch(`/api/eventos?userId=${userId}`, {
       method: 'POST',
       body: form,
@@ -65,9 +64,9 @@ export default function CadastrarEventoPage() {
       alert('Erro ao cadastrar o evento');
     }
   }
+
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
-      {/* Coluna esquerda: campos do formulário */}
       <div className={styles.leftColumn}>
         <InputGroup className="mb-3">
           <InputGroup.Text>Título</InputGroup.Text>
@@ -129,7 +128,6 @@ export default function CadastrarEventoPage() {
         </Button>
       </div>
 
-      {/* Coluna direita: upload da imagem */}
       <div className={styles.rightColumn}>
         <input
           type="file"

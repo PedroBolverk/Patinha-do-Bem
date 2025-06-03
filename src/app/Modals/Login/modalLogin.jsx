@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { signIn } from 'next-auth/react';
 
 export default function LoginModal({ show, handleClose, openRegister, onLoginSuccess }) {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -12,37 +13,20 @@ export default function LoginModal({ show, handleClose, openRegister, onLoginSuc
   };
 
   const handleLogin = async () => {
-    try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
-      });
+    const result = await signIn('credentials', {
+      redirect: false,
+      email: credentials.email,
+      password: credentials.password,
+    });
 
-      if (res.ok) {
-        const data = await res.json();
+    if (result?.ok) {
+      // Chamada opcional para callback personalizado
+      if (onLoginSuccess) onLoginSuccess();
 
-        // 👉 Cookie para controle de login (usado em validação client-side simples)
-        document.cookie = 'isLoggedIn=true; path=/';
-
-        // 👉 Armazena dados no localStorage para uso na interface
-        if (data.name) localStorage.setItem('username', data.name);
-        if (data.image) localStorage.setItem('userImage', encodeURI(data.image));
-        if (data.id) localStorage.setItem('userId', data.id.toString());
-        if (data.role) localStorage.setItem('userRole', data.role);
-        if (data.email) localStorage.setItem('userEmail', data.email);
-
-        if (onLoginSuccess) onLoginSuccess();
-
-        alert('Login realizado com sucesso');
-        handleClose();
-      } else {
-        const error = await res.json();
-        alert(error.error || 'Credenciais inválidas');
-      }
-    } catch (err) {
-      console.error('Erro no login:', err);
-      alert('Erro ao realizar login');
+      // ✅ Força atualização da página para garantir que sessão funcione no server
+      window.location.reload();
+    } else {
+      alert('Email ou senha inválidos');
     }
   };
 
@@ -61,6 +45,7 @@ export default function LoginModal({ show, handleClose, openRegister, onLoginSuc
               name="email"
               value={credentials.email}
               onChange={handleChange}
+              required
             />
           </Form.Group>
 
@@ -72,6 +57,7 @@ export default function LoginModal({ show, handleClose, openRegister, onLoginSuc
               name="password"
               value={credentials.password}
               onChange={handleChange}
+              required
             />
           </Form.Group>
         </Form>

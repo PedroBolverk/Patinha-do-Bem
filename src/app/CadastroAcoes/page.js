@@ -16,7 +16,6 @@ export default function CadastrarDoacaoPage() {
     titulo: '',
     descricao: '',
     meta: '',
-    name: '',  // autor informado como ID (number)
   });
 
   function handleChange(e) {
@@ -38,32 +37,32 @@ export default function CadastrarDoacaoPage() {
     }
   }
 
-   async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(e) {
+  e.preventDefault();
 
-    const form = new FormData();
-    Object.entries(formData).forEach(([key, value]) =>
-      form.append(key, value)
-    );
-    if (imageFile) {
-      form.append('imagem', imageFile);
-    }
-
-    const userId = localStorage.getItem('userId');
-
-
-    const res = await fetch( `/api/doacoes?userId=${userId}`, {
-      method: 'POST',
-      body: form,
-    });
-
-    if (res.ok) {
-      alert('Doação cadastrado com sucesso!');
-      router.push('/PageDoacoes');
-    } else {
-      alert('Erro ao cadastrar a doação');
-    }
+  const form = new FormData();
+  form.append('titulo', formData.titulo);
+  form.append('descricao', formData.descricao);
+  form.append('meta', formData.meta);
+  if (imageFile) {
+    form.append('imagem', imageFile);
   }
+
+  const res = await fetch('/api/doacoes', {
+    method: 'POST',
+    body: form,
+    credentials: 'include', // ✅ necessário para enviar cookies da sessão
+  });
+
+  if (res.ok) {
+    alert('Doação cadastrada com sucesso!');
+    router.push('/PageDoacoes');
+  } else {
+    const erro = await res.json();
+    alert('Erro ao cadastrar a doação: ' + (erro?.error || 'desconhecido'));
+  }
+}
+
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
@@ -104,17 +103,6 @@ export default function CadastrarDoacaoPage() {
           />
         </InputGroup>
 
-        <InputGroup className="mb-3">
-          <InputGroup.Text>Representante</InputGroup.Text>
-          <Form.Control
-            type="text"
-            placeholder="Representante da Doação"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </InputGroup>
         <Button type="submit" variant="primary">
           Cadastrar Doação
         </Button>

@@ -1,9 +1,11 @@
-
 import './globals.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import  Header  from './components/Header';
+
 
 import {Gabarito} from 'next/font/google'
+
+import ClientWrapper from './components/ClientWrapper';
+import SessionWrapper from './SessionWrapper';
 
 const prompt = Gabarito({
   weight: '400',
@@ -22,14 +24,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-br" className={prompt.className}>
       <body>
-        <div className='app-container'>
+ <SessionWrapper>
+          <ClientWrapper>
+  
           
-        <Header/>
+
         {children}
-       
+         
+       </ClientWrapper>
         
-        </div>  
-       
+        
+      </SessionWrapper>
       </body>
     </html>
   );

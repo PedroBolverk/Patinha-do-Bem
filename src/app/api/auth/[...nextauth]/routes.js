@@ -16,10 +16,33 @@ export const authOptions = {
       },
       async authorize(credentials) {
         const user = await prisma.user.findUnique({ where: { email: credentials.email } });
-        if (!user) throw new Error("Usuário não encontrado");
+
+        console.log("🔍 Buscando usuário com e-mail:", credentials.email);
+        console.log("📦 Resultado do banco:", user);
+
+        if (!user) {
+          console.log("❌ Usuário não encontrado");
+          return null;
+        }
+
+        console.log("🔐 Senha no banco (hash):", user.password);
+
         const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) throw new Error("Senha incorreta");
-        return user;
+        console.log("🔑 Resultado da comparação de senha:", isValid);
+
+        if (!isValid) {
+          console.log("❌ Senha incorreta");
+          return null;
+        }
+
+        console.log("✅ Autenticação bem-sucedida!");
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
@@ -37,6 +60,17 @@ export const authOptions = {
         session.user.role = token.role;
       }
       return session;
+    },
+  },
+  cookies: {
+    sessionToken: {
+      name: 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

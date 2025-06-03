@@ -5,6 +5,7 @@ import { Form, Table } from 'react-bootstrap';
 import styles from './style.module.css';
 import EventoCard from '../components/Eventos/CardEventos';
 import CardDoacao from '../components/CardDoacoes';
+import CardLinhaPainel from '../components/Painel/CardTabela';
 
 export default function Painel() {
   const [mostrar, setMostrar] = useState('eventos');
@@ -55,87 +56,54 @@ export default function Painel() {
             </Form.Group>
           </Form>
 
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Valor</th>
-                <th>Evento</th>
-                <th>Data do Evento</th>
-                <th>Local</th>
-                <th>Participante</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Data da Confirmação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {partici.map((p) => (
-                <tr key={p.id}>
-                  <td>Free</td>
-                  <td>{p.evento?.titulo || 'Evento não encontrado'}</td>
-                  <td>
-                    {p.evento?.dataIni
-                      ? `${new Date(p.evento.dataIni).toLocaleDateString('pt-BR')} até ${new Date(p.evento.dataFim).toLocaleDateString('pt-BR')}`
-                      : 'Data não disponível'}
-                  </td>
-                  <td>{p.evento?.local || 'Local não informado'}</td>
-                  <td>{p.nome}</td>
-                  <td>{p.email}</td>
-                  <td>Confirmado</td>
-                  <td>{new Date(p.dataHora).toLocaleString('pt-BR')}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          {partici.map((p) => (
+  <CardLinhaPainel
+    key={p.id}
+    valor={0}
+    titulo={p.evento?.titulo}
+    nome={p.nome}
+    email={p.email}
+    data={p.dataHora}
+    status="confirmado"
+  />
+))}
+
         </>
       );
     }
 
     return (
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Título</th>
-            <th>Descrição</th>
-            <th>Meta</th>
-            <th>Atual</th>
-            <th>Autor</th>
-            <th>Email</th>
-            <th>Data</th>
-          </tr>
-        </thead>
-        <tbody>
-          {doacoes.map((d) => (
-            <tr key={d.id}>
-              <td>{d.titulo}</td>
-              <td>{d.descricao}</td>
-              <td>{d.meta}</td>
-              <td>{d.atual}</td>
-              <td>{d.author?.name || 'Anônimo'}</td>
-              <td>{d.author?.email || 'Não informado'}</td>
-              <td>{new Date(d.createdAt).toLocaleString('pt-BR')}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <>
+      {doacoes.map((d) => (
+  <CardLinhaPainel
+    key={d.id}
+    valor={d.meta}
+    titulo={d.titulo}
+    nome={d.author?.name || 'Anônimo'}
+    email={d.author?.email || '---'}
+    data={d.createdAt}
+    status="confirmado"
+  />
+))}
+</>
     );
   };
 
   return (
-    <div>
+    <div className="container">
       <div className={styles.buttonHeader}>
-        <button
-          className={styles.botaoEventosDoacoes}
-          onClick={() => setMostrar('eventos')}
-        >
-          Eventos
-        </button>
-        <button
-          className={styles.botaoEventosDoacoes}
-          onClick={() => setMostrar('doacoes')}
-        >
-          Doações
-        </button>
+         <button
+    className={`${styles.botaoEventosDoacoes} ${mostrar === 'eventos' ? styles.botaoAtivo : ''}`}
+    onClick={() => setMostrar('eventos')}
+  >
+    Eventos
+  </button>
+       <button
+    className={`${styles.botaoEventosDoacoes} ${mostrar === 'doacoes' ? styles.botaoAtivo : ''}`}
+    onClick={() => setMostrar('doacoes')}
+  >
+    Doações
+  </button>
       </div>
 
       <h1>{mostrar === 'eventos' ? 'Painel de Eventos' : 'Painel de Doações'}</h1>

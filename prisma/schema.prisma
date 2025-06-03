@@ -43,6 +43,7 @@ model Post {
   atual     Int
   descricao String
   meta      Int
+  imagem    String?
   titulo    String
   author    User     @relation(fields: [authorId], references: [id])
 }

@@ -1,21 +1,40 @@
 .HeroCardUnified {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 1100px;
-  margin: 2rem auto;
-  border-radius: 20px;
-  overflow: hidden;
-  padding: 2rem;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  background-color: white;
+
+
+  padding-top: 2rem;
+
+   margin-bottom: 2rem;
+   margin-top: 0.1rem;
+}
+
+section {
+  margin: 0;
+  padding: 0;
 }
 
 .HeroContentEsquerda {
-  flex: 1;
-  text-align: left;
-  padding-right: 2rem;
+   background-image: url('/wallpapper.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  width: 100%;
+
+  color: white;
+  min-height: 400px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .HeroImageDireita {
@@ -30,7 +49,7 @@
   height: auto;
 }
 
-.HeroCardUnified .Titulo {
+.Titulo {
   font-size: 42px;
   font-weight: 700;
   color: #222;
@@ -38,27 +57,27 @@
   font-family: "Gabarito", sans-serif;
 }
 
-.HeroCardUnified .Subtitulo {
-  font-size: 18px;
-  color: #333;
+.Subtitulo {
+ font-size: 16px;
+  color: #f4fffb;
+  font-family: "Gabarito", sans-serif;
   margin-bottom: 1.5rem;
-  font-family: "Brawler", serif;
 }
 
-.HeroCardUnified .BotaoDoar {
-  font-size: 18px;
-  padding: 12px 28px;
-  background-color: #41B273;
+.BotaoDoar {
+  display: inline-block;
+  background-color: #1f9e75;
   color: white;
-  border: none;
-  border-radius: 28px;
+  padding: 12px 28px;
+  border-radius: 24px;
+  text-decoration: none;
+  font-size: 16px;
   font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s ease;
-  
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.HeroCardUnified .BotaoDoar:hover {
+.BotaoDoar:hover {
+  background-color: #177f5f;
   transform: scale(1.05);
 }
 
@@ -96,8 +115,11 @@
 }
 
 .TituloEvento {
-  font-size: 15px;
-  color: #333;
+ font-size: 15px;
+  font-weight: bold;
+  color: #1f3c2d;
+  margin-bottom: 0.8rem;
+  font-family: 'Gabarito', sans-serif;
 }
 
 .Eventos {
@@ -116,7 +138,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 2rem;
+  gap: 1.2rem;
   flex-wrap: wrap;
   width: 100%;
   
@@ -165,14 +187,26 @@
   display: block;
   margin: 0 auto;
 }
-
+.page-wrapper{
+   padding-top: 0;        
+  padding-bottom: 2rem;
+  margin-top: 64px;
+}
 /* Responsivo */
 @media (max-width: 768px) {
-  .HeroCardUnified {
-    padding: 2rem 1rem;
-    border-radius: 16px;
+  .HeroContentEsquerda{
+  min-height: 200px; /* menor altura */
+  padding: 2rem 1.5rem;
   }
+  .HeroCardUnified {
+  
+    border-radius: 16px;
+    padding-top: 0px;
 
+  }
+ .page-wrapper {
+    padding-bottom: 1.5rem;
+  }
   .HeroCardUnified .Titulo {
     font-size: 28px;
   }

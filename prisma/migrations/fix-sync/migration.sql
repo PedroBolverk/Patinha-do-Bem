@@ -1,0 +1,3 @@
+-- This migration was resolved manually with `prisma migrate resolve`.
+-- No SQL was needed.
+-- fix-sync placeholder: marked as resolved manually with no changes.

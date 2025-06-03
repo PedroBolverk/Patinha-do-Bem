@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import caoegato from './caoegato.png';
+
 import icones from './icones.jpg';
 import calendarioevents from './calendarioevents.jpg';
 import './style.css';
@@ -34,17 +34,20 @@ export default function HomePage() {
       {/* Hero Card Responsivo */}
       <section className="HeroCardUnified">
         <div className="HeroContentEsquerda">
-          <h1 className="Titulo">Ajude-nos a salvar os Animais</h1>
+          <h1 className="Titulo">Ajude-nos a <br/> salvar <br/> os Animais</h1>
           <h2 className="Subtitulo">
-            Junte-se a nós e faça a diferença na vida de animais necessitados
+            Junte-se a nós e faça a diferença <br/> na vida de animais necessitados
           </h2>
-          <button className='TodosEventos'>
-          <Link className='Link' href="/PageDoacoes">Doar Agora</Link>
-        </button>
+          
+         <Link href="/PageDoacoes" className="BotaoDoar">
+  Doar Agora
+</Link>
+
+        
         </div>
-        <div className="HeroImageDireita">
+        {/* <div className="HeroImageDireita">
           <Image src={caoegato} alt="Cão e Gato" className="HeroImageContent" />
-        </div>
+        </div> */}
       </section>
 
       {/* Cards de Eventos, Missão e Adoção */}
