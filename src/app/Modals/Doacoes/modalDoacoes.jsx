@@ -6,8 +6,7 @@ import styles from './Modal.module.css';
 import { useSession } from 'next-auth/react';
 
 export default function ModalDoacoes({ doacao, onClose }) {
-  const { data: session } = useSession(); 
-
+  const { data: session } = useSession();
 
   const [valorRaw, setValorRaw] = useState('');
   const [nome, setNome] = useState('');
@@ -17,7 +16,6 @@ export default function ModalDoacoes({ doacao, onClose }) {
   const [loading, setLoading] = useState(false);
   const [valorFormatado, setValorFormatado] = useState('');
   const [valorNumerico, setValorNumerico] = useState(0);
-
 
   if (!doacao) return null;
 
@@ -53,22 +51,42 @@ export default function ModalDoacoes({ doacao, onClose }) {
       return;
     }
 
-    setLoading(true);
+    if (!doacao?.id) {
+      alert('ID da campanha não encontrado!');
+      return;
+    }
 
-    const res = await fetch('/api/donate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        amount: valorNumerico,
-        postId: doacao.id,
-        donorName: nome,
-        donorEmail: email,
-      }),
+    console.log('[ENVIANDO DADOS PARA API]', {
+      amount: valorNumerico,
+      postId: doacao.id,
+      donorName: nome,
+      donorEmail: email,
     });
 
-    const data = await res.json();
+    setLoading(true);
 
-    if (data.success) {
+    try {
+      const res = await fetch('/api/donate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: valorNumerico,
+          postId: doacao.id,
+          donorName: nome,
+          donorEmail: email,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error('[ERRO API DOAÇÃO]', data);
+        alert(data.error || 'Erro ao processar doação');
+        return;
+      }
+
+      console.log('[PAYLOAD RECEBIDO]', data.payload);
+
       setPayload(data.payload);
 
       const numero = doacao.author?.whatsapp?.replace(/\D/g, '');
@@ -83,9 +101,12 @@ export default function ModalDoacoes({ doacao, onClose }) {
       } else {
         setWhatsappLink(null);
       }
+    } catch (err) {
+      console.error('[ERRO FATAL DOAÇÃO]', err);
+      alert('Erro ao processar doação. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
