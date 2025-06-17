@@ -1,5 +1,5 @@
 import HomePage from "./pages/HomePage";
-
+import styles from './globals.css'
 import logger from "./logger";
 
 async function fetchDoacoes() {
@@ -9,7 +9,7 @@ async function fetchDoacoes() {
       include: {
         author: true
       }
-    }) // Buscar dados do Banco //await vai aguardar a resposta do banco
+    }) 
 
     return {data: posts}
 
@@ -23,7 +23,7 @@ export default async function Home() {
   const doacoes = await fetchDoacoes();
 
   return (
-    <main>
+    <main className={styles.main}>
       <HomePage />   
     </main>
   );

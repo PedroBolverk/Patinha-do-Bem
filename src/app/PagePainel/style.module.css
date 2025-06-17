@@ -38,6 +38,32 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
 }
+.Carousel{
+ color: black;
+  
+ 
+}
+.carouselGroup {
+display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+   padding: 20px 40px; /* espaçamento interno p/ afastar setas */
+  position: relative;
+}
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%; /* controla quão afastadas ficam */
+  top: 50%;
+  transform: translateY(-50%);
+}
+.carousel-control-next {
+  right: -30px;
+}
+/* Indicadores de navegação (bolinhas ou tracinhos) */
+.carousel-indicators {
+  bottom: -90px; /* joga para fora abaixo dos cards */
+}
 
 .botaoAtivo {
   background-color: #00bfae;
@@ -46,8 +72,12 @@
   box-shadow: 0 4px 10px rgba(0, 191, 174, 0.4);
   transform: scale(1.03);
 }
+.carousel.fade .carousel-item {
+  transition: opacity 0.8s ease-in-out;
+}
 
 @media (max-width: 480px) {
+
   .botaoEventosDoacoes {
     width: 150px;
 
@@ -58,9 +88,6 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-
-   
-
   }
 
 
@@ -68,9 +95,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 16px;
+     padding-top: 0px;
+    gap: 1rem;
     margin: 2rem 0;
-    flex-wrap: wrap;
+    flex-wrap: row;
   }
 
   .botaoAtivo {
@@ -80,5 +108,29 @@
   .grid {
     grid-template-columns: 1fr;
     padding: 0.5rem;
+  }
+ .carouselGroup {
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 2rem;
+    margin: 0;
+    gap: 1rem;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 10%;
+  }
+
+  .carousel-control-prev {
+    left: -10px;
+  }
+
+  .carousel-control-next {
+    right: -10px;
+  }
+
+  .carousel-indicators {
+  padding-top: 1rem;
   }
 }

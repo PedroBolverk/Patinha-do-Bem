@@ -1,4 +1,4 @@
-// ✅ src/app/components/ClientWrapper.jsx — CLIENT COMPONENT
+
 'use client'
 
 import Header from './Header';

@@ -15,37 +15,40 @@ datasource db {
 
 enum Role {
   ADMIN
-  ORGANIZADOR 
+  ORGANIZADOR
   COMUM
 }
 
 model User {
   id       Int     @id @default(autoincrement())
   name     String
+  city     String?
+  whatsapp String?
   username String  @unique
-  role Role @default(COMUM)
+  role     Role    @default(COMUM)
   email    String  @unique
   password String
   image    String?
-
-  
+  pix      String?
 
   // Events   Events[]
-  Post Post[]
-  events   Events[]  @relation("OrganizadorEvents")
+  Post              Post[]
+  events            Events[]   @relation("OrganizadorEvents")
+  donationsReceived Donation[] @relation("UserDonations")
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   authorId  Int
   atual     Int
   descricao String
   meta      Int
   imagem    String?
   titulo    String
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User       @relation(fields: [authorId], references: [id])
+  donations Donation[]
 }
 
 model Events {
@@ -62,19 +65,32 @@ model Events {
   organizadorId Int?
   organizador   User? @relation("OrganizadorEvents", fields: [organizadorId], references: [id])
 
-  participacoes Participacao[] 
+  participacoes Participacao[]
 
   @@map("events")
 }
 
-
 model Participacao {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  email     String
-  eventoId  Int
-  evento    Events   @relation(fields: [eventoId], references: [id])
-  dataHora  DateTime @default(now())
+  id       Int      @id @default(autoincrement())
+  nome     String
+  email    String
+  eventoId Int
+  evento   Events   @relation(fields: [eventoId], references: [id])
+  dataHora DateTime @default(now())
 }
 
+model Donation {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  confirmedAt DateTime?
+  amount      Int
+  donorName   String?
+  donorEmail  String?
+  status      String    @default("pending") // "pending" | "confirmed"
 
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+
+  receiverId Int
+  receiver   User @relation("UserDonations", fields: [receiverId], references: [id])
+}

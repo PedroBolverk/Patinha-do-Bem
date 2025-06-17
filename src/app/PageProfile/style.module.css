@@ -1,0 +1,190 @@
+.container {
+     margin-top: 3rem;
+    padding: 0 1rem;
+    min-height: 100vh;
+    background-color: #f5f6fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+.tab {
+    display: flex;
+    justify-content: space-around;
+    margin: 2rem 0;
+    border-radius: 12px;
+    padding: 0.5rem;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.gridForm{
+    display: grid;
+    padding-top: 1rem;
+}
+
+.visaogeral {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+   justify-content: center;
+}
+
+.blocoPerfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 280px;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.imagemPerfil {
+    width: 130px !important;
+    height: 130px !important;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #007bff;
+    margin-bottom: 1rem;
+}
+
+.blocoNomeEmail {
+    margin-top: 1rem;
+}
+
+.blocoNomeEmail span {
+    display: block;
+    font-size: 17px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.3rem;
+}
+
+.blocoNomeEmail button {
+    margin-top: 0.7rem;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.blocoNomeEmail button:hover {
+    background-color: #0056b3;
+}
+
+.blocoInfo {
+    flex: 1;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.blocoInfo p {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 1rem;
+}
+
+.blocoInfo form {
+    margin-top: 1.5rem;
+}
+
+.blocoInfo form label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 0.3rem;
+    display: block;
+}
+
+.blocoInfo form .form-control {
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.blocoInfo form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
+}
+
+.blocoInfo button {
+    background-color: #007bff;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.blocoInfo button:hover {
+    background-color: #0056b3;
+}
+
+.contentTab {
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    margin: auto;
+}
+
+.contentTab h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.contentTab .form-control {
+    padding: 0.75rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.contentTab .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
+}
+
+.contentTab .form-check {
+    margin-top: 1rem;
+    font-size: 14px;
+}
+
+.contentTab button {
+    margin-top: 1rem;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.contentTab button:hover {
+    background-color: #0056b3;
+}
+
+.contentTab .input-group-text {
+    background-color: #fff;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .container {
+    margin-top: 0.2rem;
+    padding: 0 1rem;
+    min-height: 100vh;
+}
+}

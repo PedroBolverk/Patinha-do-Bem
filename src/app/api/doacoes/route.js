@@ -4,7 +4,7 @@ import cloudinary from "../../../../lib/cloudinary";
 import { Readable } from "stream";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/routes";
-import { headers } from "next/headers"; // ✅ IMPORTANTE para App Router
+import { headers } from "next/headers";
 
 const prisma = new PrismaClient();
 

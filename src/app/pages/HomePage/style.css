@@ -196,7 +196,7 @@ section {
 @media (max-width: 768px) {
   .HeroContentEsquerda{
   min-height: 200px; /* menor altura */
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
   }
   .HeroCardUnified {
   

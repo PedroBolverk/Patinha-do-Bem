@@ -20,9 +20,11 @@ export default function Header() {
   const { data: session } = useSession();
   const user = session?.user;
 
-  // ✅ Atualiza localStorage e cookie quando logado
   useEffect(() => {
     if (user) {
+
+        console.log('Imagem do usuário:', user?.image);
+        
       localStorage.setItem('username', user.name || '');
       localStorage.setItem('userImage', user.image || '');
       localStorage.setItem('userRole', user.role || '');
@@ -35,7 +37,7 @@ export default function Header() {
   }, [user]);
 
   const handleLogout = () => {
-    // Limpa localStorage e cookie ao sair
+    
     localStorage.clear();
     document.cookie = 'isLoggedIn=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
     signOut({ callbackUrl: '/' });
@@ -96,6 +98,7 @@ export default function Header() {
           )}
 
           <div className={styles.ImageWrapper}>
+            <Link href="/PageProfile">
             <Image
               src={user?.image || Login}
               alt="Ícone de Login"
@@ -104,9 +107,12 @@ export default function Header() {
               className={styles.LogoLogin}
               style={{ objectFit: 'cover' }}
             />
+           </Link>
           </div>
+          
         </nav>
       </div>
+      
 
       <LoginModal
         show={showLogin}
@@ -130,5 +136,6 @@ export default function Header() {
         }}
       />
     </>
+    
   );
 }

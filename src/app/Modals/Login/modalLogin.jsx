@@ -20,10 +20,9 @@ export default function LoginModal({ show, handleClose, openRegister, onLoginSuc
     });
 
     if (result?.ok) {
-      // Chamada opcional para callback personalizado
+    
       if (onLoginSuccess) onLoginSuccess();
 
-      // ✅ Força atualização da página para garantir que sessão funcione no server
       window.location.reload();
     } else {
       alert('Email ou senha inválidos');
