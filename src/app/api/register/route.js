@@ -24,6 +24,9 @@ export async function POST(req) {
     const rawRole = formData.get('role');
     const role = rawRole?.toString().trim().toUpperCase();
 
+    const city = formData.get('city') || null;
+    const whatsapp = formData.get('whatsapp')?.replace(/\D/g, '') || null;
+
     // ✅ Validações obrigatórias
     if (!name || !username || !email || !password) {
       return new Response(
@@ -39,7 +42,6 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Evita duplicidade
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return new Response(
@@ -48,7 +50,6 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Upload de imagem (se houver)
     let imageUrl = null;
     if (file && typeof file.name === 'string') {
       const buffer = Buffer.from(await file.arrayBuffer());
@@ -65,10 +66,8 @@ export async function POST(req) {
       });
     }
 
-    // ✅ Hash da senha
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Criação do usuário
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -77,13 +76,15 @@ export async function POST(req) {
         password: hashedPassword,
         role,
         image: imageUrl,
+        city,
+        whatsapp,
       },
     });
 
     return new Response(
       JSON.stringify({
         message: 'Usuário criado com sucesso',
-        imageUrl: imageUrl,
+        imageUrl,
       }),
       { status: 201, headers: { 'Content-Type': 'application/json' } }
     );
