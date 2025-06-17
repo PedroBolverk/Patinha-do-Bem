@@ -57,7 +57,7 @@ export async function POST(request) {
     });
 
     // 📲 Geração do link de confirmação via WhatsApp
-    const phone = post.author.username?.replace(/\D/g, '') || '';
+    const phone = post.author.whatsapp?.replace(/\D/g, '') || '';
     const valorFormatado = formatCurrency(valorNumerico);
     const confirmUrl = `https://seusite.com/confirmar-doacao/${donation.id}`;
     const msg = `Olá! Fiz uma doação de ${valorFormatado} para sua campanha "${post.titulo}". Pode confirmar o recebimento aqui: ${confirmUrl}`;
