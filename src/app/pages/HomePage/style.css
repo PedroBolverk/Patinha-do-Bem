@@ -2,13 +2,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-
-
+  width: 100%;               /* Por padrão, ocupa toda a largura disponível */
+  max-width: 1078px;         /* Limite máximo de 1078px para o desktop */
+  margin-left: auto;         /* Centraliza horizontalmente */
+  margin-right: auto;        /* Centraliza horizontalmente */
   padding-top: 2rem;
-
-   margin-bottom: 2rem;
-   margin-top: 0.1rem;
+  margin-bottom: 2rem;
+  margin-top: 0.1rem;
 }
 
 section {
@@ -17,23 +17,21 @@ section {
 }
 
 .HeroContentEsquerda {
-   background-image: url('/wallpapper.jpg');
-  background-size: cover;
+  background-image: url('/wallpapper.jpg');
+  background-size: cover;    /* Garante que a imagem cubra todo o espaço disponível */
   background-position: center;
   background-repeat: no-repeat;
 
   padding: 3rem 2rem;
   border-radius: 16px;
-  width: 100%;
-
+  width: 100%;                /* Ocupa toda a largura do container */
+  height: 100%;               /* Garante que a imagem ocupe o espaço completo da altura */
+  min-height: 400px;          /* Altura mínima para garantir boa exibição */
   color: white;
-  min-height: 400px;
-
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
-
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
@@ -188,9 +186,15 @@ section {
   margin: 0 auto;
 }
 .page-wrapper{
-   padding-top: 0;        
+   padding-top: 0;
   padding-bottom: 2rem;
   margin-top: 64px;
+  width: 100%;          /* 100% de largura para telas pequenas */
+  max-width: 1078px;    /* Define a largura máxima para desktop */
+  margin-left: auto;    /* Centraliza o conteúdo */
+  margin-right: auto;   /* Centraliza o conteúdo */
+  padding-left: 2rem;   /* Adiciona espaçamento lateral */
+  padding-right: 2rem;  /* Adiciona espaçamento lateral */
 }
 /* Responsivo */
 @media (max-width: 768px) {
