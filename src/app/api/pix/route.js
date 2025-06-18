@@ -1,57 +1,21 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route"; // ✅ Corrigido: era 'routes'
-import prisma from "../../../../lib/prisma"; // ✅ Certifique-se que o caminho está correto
+import { authOptions } from "../auth/[...nextauth]/route";
+import { headers, cookies } from "next/headers";
+import prisma from "../../../../lib/prisma";
+import { NextResponse } from "next/server";
 
-// Atualiza chave PIX
-export async function POST(req) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session || !session.user?.id) {
-      return new Response(
-        JSON.stringify({ error: 'Usuário não autenticado' }),
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const formData = await req.formData();
-    const pix = formData.get('pix');
-
-    if (!pix || typeof pix !== 'string') {
-      return new Response(
-        JSON.stringify({ error: 'Chave PIX não fornecida ou inválida' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: { pix: pix.trim() },
-    });
-
-    return new Response(
-      JSON.stringify({ message: 'Chave PIX atualizada com sucesso' }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
-  } catch (err) {
-    console.error('[UPDATE_PIX_ERROR]', err);
-    return new Response(
-      JSON.stringify({ error: 'Erro ao atualizar chave PIX' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
+// ✅ Recuperar sessão com contexto no App Router
+async function getSessionWithContext() {
+  return await getServerSession({ req: { headers: headers(), cookies: cookies() }, ...authOptions });
 }
 
-// Retorna chave PIX
-export async function GET(req) {
+// ✅ [GET] Obter chave PIX
+export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getSessionWithContext();
 
     if (!session || !session.user?.id) {
-      return new Response(
-        JSON.stringify({ error: 'Usuário não autenticado' }),
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      );
+      return NextResponse.json({ error: "Usuário não autenticado" }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
@@ -59,15 +23,37 @@ export async function GET(req) {
       select: { pix: true },
     });
 
-    return new Response(
-      JSON.stringify({ pixKey: user?.pix || '' }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+    return NextResponse.json({ pixKey: user?.pix || "" }, { status: 200 });
   } catch (err) {
-    console.error('[GET_PIX_ERROR]', err);
-    return new Response(
-      JSON.stringify({ error: 'Erro ao recuperar chave PIX' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    console.error("[GET_PIX_ERROR]", err);
+    return NextResponse.json({ error: "Erro ao recuperar chave PIX" }, { status: 500 });
+  }
+}
+
+// ✅ [POST] Atualizar chave PIX
+export async function POST(req) {
+  try {
+    const session = await getSessionWithContext();
+
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ error: "Usuário não autenticado" }, { status: 401 });
+    }
+
+    const formData = await req.formData();
+    const pix = formData.get("pix");
+
+    if (!pix || typeof pix !== "string") {
+      return NextResponse.json({ error: "Chave PIX inválida" }, { status: 400 });
+    }
+
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { pix: pix.trim() },
+    });
+
+    return NextResponse.json({ message: "Chave PIX atualizada com sucesso" }, { status: 200 });
+  } catch (err) {
+    console.error("[UPDATE_PIX_ERROR]", err);
+    return NextResponse.json({ error: "Erro ao atualizar chave PIX" }, { status: 500 });
   }
 }
