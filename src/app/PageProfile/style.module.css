@@ -9,12 +9,18 @@
 
 .tab {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     margin: 2rem 0;
     border-radius: 12px;
     padding: 0.5rem;
     background-color: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+}
+.gridGeral{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .gridForm{
     display: grid;

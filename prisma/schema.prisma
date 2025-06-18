@@ -22,7 +22,6 @@ enum Role {
 model User {
   id       Int     @id @default(autoincrement())
   name     String
-  city     String?
   whatsapp String?
   username String  @unique
   role     Role    @default(COMUM)
@@ -30,6 +29,8 @@ model User {
   password String
   image    String?
   pix      String?
+  estado   String?
+  cidade   String?
 
   // Events   Events[]
   Post              Post[]

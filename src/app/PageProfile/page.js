@@ -19,6 +19,54 @@ export default function Profile() {
     const { data: session, status } = useSession();
     const [celular, setCelular] = useState('');
     const [isSessionLoaded, setIsSessionLoaded] = useState(false);
+    const [states, setStates] = useState([]);
+    const [whatsappRaw, setWhatsappRaw] = useState('');
+    const [cities, setCities] = useState([]);
+    const [selectedState, setSelectedState] = useState('');
+    const [selectedCity, setSelectedCity] = useState('');
+    console.log('WhatsApp enviado:', celular, 'limpo:', celular.replace(/\D/g, ''));
+
+    const handleUpdateProfile = async () => {
+        try {
+            const form = new FormData();
+            form.append('userId', session.user.id);
+            form.append('name', session.user.name);
+            form.append('email', session.user.email);
+            form.append('estado', selectedState);
+            form.append('cidade', selectedCity);
+            form.append('whatsapp', whatsappRaw); // <- número sem formatação
+            form.append('pix', credentials.pixKey);
+
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                body: form,
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                alert(`Erro: ${error.error}`);
+                return;
+            }
+
+            alert('Dados atualizados com sucesso!');
+        } catch (err) {
+            console.error('Erro ao atualizar perfil:', err);
+            alert('Erro inesperado ao atualizar perfil.');
+        }
+    };
+
+    useEffect(() => {
+        if (session?.user) {
+            const numero = session.user.whatsapp || '';
+            const raw = numero.replace(/\D/g, '').slice(0, 11);
+            const formatted = raw
+                .replace(/^(\d{2})(\d)/, '($1) $2')
+                .replace(/(\d{5})(\d)/, '$1-$2');
+            setCelular(formatted);
+            setWhatsappRaw(raw); // também salva valor limpo para envio
+        }
+    }, [session]);
+
 
     useEffect(() => {
         if (session && session.user) {
@@ -32,6 +80,28 @@ export default function Profile() {
             window.dispatchEvent(new Event('userRoleChanged'));
         }
     }, [session]);
+
+    useEffect(() => {
+        fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome')
+            .then(res => res.json())
+            .then(data => setStates(data))
+            .catch(err => console.error('Erro ao carregar estados:', err));
+    }, []);
+
+    useEffect(() => {
+        if (session?.user?.estado) {
+            setSelectedState(session.user.estado);
+
+            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${session.user.estado}/municipios`)
+                .then(res => res.json())
+                .then(data => {
+                    setCities(data);
+                    setSelectedCity(session.user.cidade || '');
+                })
+                .catch(err => console.error('Erro ao carregar cidades:', err));
+        }
+    }, [session]);
+
 
     useEffect(() => {
         if (status !== 'loading') {
@@ -161,7 +231,7 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    <div>
+                    <div className={styles.gridGeral}>
                         <Form.Group className="mb-3">
                             <Form.Label>Nome Completo</Form.Label>
                             <Form.Control placeholder="Nome Completo" value={session.user.name} readOnly />
@@ -180,9 +250,11 @@ export default function Profile() {
                                         .replace(/^(\d{2})(\d)/, '($1) $2')
                                         .replace(/(\d{5})(\d)/, '$1-$2');
                                     setCelular(formatted);
+                                    setWhatsappRaw(input); // salva valor limpo
                                 }}
                             />
                         </Form.Group>
+
 
                         <Form.Group as={Col}>
                             <Form.Label>Email</Form.Label>
@@ -196,31 +268,53 @@ export default function Profile() {
 
                         <Row>
                             <Col>
-                                <Form.Label>Cidade</Form.Label>
-                                <Form.Select>
-                                    <option>Selecione a cidade</option>
-                                    <option value="1">São Paulo</option>
-                                    <option value="2">Rio de Janeiro</option>
+                                <Form.Label>Estado</Form.Label>
+                                <Form.Select
+                                    value={selectedState}
+                                    onChange={(e) => {
+                                        const uf = e.target.value;
+                                        setSelectedState(uf);
+                                        setSelectedCity('');
+                                        fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`)
+                                            .then(res => res.json())
+                                            .then(data => setCities(data));
+                                    }}
+                                >
+                                    <option value="">Selecione o estado</option>
+                                    {states.map((state) => (
+                                        <option key={state.id} value={state.sigla}>
+                                            {state.nome}
+                                        </option>
+                                    ))}
                                 </Form.Select>
                             </Col>
                             <Col>
-                                <Form.Label>Estado</Form.Label>
-                                <Form.Select>
-                                    <option>Selecione o estado</option>
-                                    <option value="SP">SP</option>
-                                    <option value="RJ">RJ</option>
+                                <Form.Label>Cidade</Form.Label>
+                                <Form.Select
+                                    value={selectedCity}
+                                    onChange={(e) => setSelectedCity(e.target.value)}
+                                >
+                                    <option value="">Selecione a cidade</option>
+                                    {cities.map((city) => (
+                                        <option key={city.id} value={city.nome}>
+                                            {city.nome}
+                                        </option>
+                                    ))}
                                 </Form.Select>
                             </Col>
+
                         </Row>
 
-                        <Form.Label>Sexo</Form.Label>
+                        <Form.Label>Gênero</Form.Label>
                         <Form.Select>
                             <option>Selecione</option>
                             <option value="F">Feminino</option>
                             <option value="M">Masculino</option>
                             <option value="N">Prefiro não opinar</option>
                         </Form.Select>
+                        <Button onClick={handleUpdateProfile} >Atualizar Dados</Button>
                     </div>
+
                 </Tab>
 
                 <Tab eventKey="financeiro" title="Financeiro">
