@@ -3,7 +3,7 @@ import AsyncRetry from "async-retry";
 import cloudinary from "../../../../lib/cloudinary";
 import { Readable } from "stream";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/routes";
+import { authOptions } from "../auth/[...nextauth]/authOption";
 import { headers } from "next/headers";
 
 const prisma = new PrismaClient();

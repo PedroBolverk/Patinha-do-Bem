@@ -1,18 +1,18 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
-import { headers, cookies } from "next/headers";
+import authOptions from "../auth/[...nextauth]/authOption";
 import prisma from "../../../../lib/prisma";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
-// ✅ Recuperar sessão com contexto no App Router
-async function getSessionWithContext() {
-  return await getServerSession({ req: { headers: headers(), cookies: cookies() }, ...authOptions });
+// ✅ Obter sessão com contexto (App Router)
+async function getSessionWithCookies() {
+  return await getServerSession(authOptions);
 }
 
-// ✅ [GET] Obter chave PIX
+// ✅ [GET] - Retorna chave PIX
 export async function GET() {
   try {
-    const session = await getSessionWithContext();
+    const session = await getSessionWithCookies();
 
     if (!session || !session.user?.id) {
       return NextResponse.json({ error: "Usuário não autenticado" }, { status: 401 });
@@ -30,10 +30,10 @@ export async function GET() {
   }
 }
 
-// ✅ [POST] Atualizar chave PIX
+// ✅ [POST] - Atualiza chave PIX
 export async function POST(req) {
   try {
-    const session = await getSessionWithContext();
+    const session = await getSessionWithCookies();
 
     if (!session || !session.user?.id) {
       return NextResponse.json({ error: "Usuário não autenticado" }, { status: 401 });
