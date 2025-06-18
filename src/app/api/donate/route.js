@@ -1,3 +1,4 @@
+console.log('DB URL:', process.env.DATABASE_URL);
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { generatePixPayload } from '@/utils/pix';

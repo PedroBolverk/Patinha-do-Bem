@@ -91,7 +91,7 @@ export default function ModalDoacoes({ doacao, onClose }) {
 
       const numero = doacao.author?.whatsapp?.replace(/\D/g, '');
       const msg = encodeURIComponent(
-        `Olá ${doacao.author?.name}, acabei de realizar uma doação de R$ ${valorNumerico.toFixed(
+        `Olá ${doacao.author?.name}, sou ${nome} acabei de realizar uma doação de R$ ${valorNumerico.toFixed(
           2
         )} para a campanha "${doacao.titulo}". Segue o comprovante do PIX gerado.`
       );
@@ -108,11 +108,23 @@ export default function ModalDoacoes({ doacao, onClose }) {
       setLoading(false);
     }
   };
+  const handleClose = () => {
+  
+    setValorRaw('');
+    setNome('');
+    setEmail('');
+    setPayload(null);
+    setWhatsappLink(null);
+    setLoading(false);
+    setValorFormatado('');
+    setValorNumerico(0);
+    onClose(); 
+  };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.close} onClick={onClose}>×</button>
+        <button className={styles.close} onClick={handleClose}>×</button>
         <h2>{doacao.titulo}</h2>
         <p>{doacao.descricao}</p>
         <p><strong>Meta:</strong> R$ {doacao.meta}</p>
