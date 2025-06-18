@@ -10,42 +10,54 @@ export default function DoacoesPage() {
   const [doacoes, setDoacoes] = useState([]);
   //pegar seleção, estado inicial quando nao tem nada selecionado
   const [selecionada, setSelecionada] = useState(null);
-
+  const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   //Chamada da API ao carregar a tela
   useEffect(() => {
+    function handleRoleChange() {
+      const storedUserRole = localStorage.getItem('userRole');
+      setUserRole(storedUserRole);
+    }
+    window.addEventListener('userRoleChanged', handleRoleChange);
+
+    handleRoleChange();
     fetch('/api/doacoes') //buscar doações
       .then((res) => {
         if (!res.ok) throw new Error('Erro na resposta da API');//se nao carregar 
-        return res.json(); 
+        return res.json();
       })
-      .then((data) =>{
+      .then((data) => {
         setDoacoes(data);
         setLoading(false);
       })
-      .catch((err) =>{
+      .catch((err) => {
         console.error('Erro ao buscar doações', err);
         setError('Erro ao carregar dados. Tente novamente.');
         setLoading(false);
-      });      
+      });
+    return () => {
+      window.removeEventListener('userRoleChanged', handleRoleChange);
+    };
   }, []);
-        if (loading){
-          return <div>Carregando doações...</div>
-        }
-        if (error){
-          return <div>{error}</div>
-        }
+  if (loading) {
+    return <div>Carregando doações...</div>
+  }
+  if (error) {
+    return <div>{error}</div>
+  }
 
   return (
     <main className={styles.containerMain}>
       <div className={styles.header}>
         <h1 className={styles.titulo}>Doações em Andamento</h1>
-        <CadastrarDoacao />
+        {userRole == 'ORGANIZADOR' && (
+          <CadastrarDoacao />
+        )}
       </div>
 
-      
+
       <div className={styles.container}>
         {doacoes.length === 0 ? (
           <p>Nenhuma doação encontrada.</p>
