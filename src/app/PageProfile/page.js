@@ -111,23 +111,18 @@ export default function Profile() {
 
     useEffect(() => {
         if (session?.user) {
-            // Carrega o número de WhatsApp do banco e formata
+           
             const numero = session.user.whatsapp || '';
             const raw = numero.replace(/\D/g, '').slice(0, 11);
             const formatted = raw
                 .replace(/^(\d{2})(\d)/, '($1) $2')
                 .replace(/(\d{5})(\d)/, '$1-$2');
             setCelular(formatted);
-
-            // Carrega chave Pix
+            setWhatsappRaw(raw);
+           
             const fetchPixKey = async () => {
                 try {
-                    const response = await fetch('/api/pix', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${session.user.token || ''}`
-                        }
-                    });
+                    const response = await fetch('/api/pix');
                     if (response.ok) {
                         const data = await response.json();
                         setCredentials(prev => ({ ...prev, pixKey: data.pixKey || '' }));
@@ -138,9 +133,11 @@ export default function Profile() {
                     console.error('Erro ao buscar chave Pix:', error);
                 }
             };
+
             fetchPixKey();
         }
     }, [session]);
+
 
     if (status === 'loading' || !isSessionLoaded) return <div>Carregando...</div>;
     if (!session) return <div>Não autenticado</div>;
