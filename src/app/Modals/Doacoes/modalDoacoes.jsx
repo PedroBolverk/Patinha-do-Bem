@@ -157,7 +157,7 @@ export default function ModalDoacoes({ doacao, onClose }) {
   return (
     <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.close} onClick={handleClose}>×</button>
+        <button className={styles.close} onClick={onclose}>x</button>
         <h2>{doacao.titulo}</h2>
         <p>{doacao.descricao}</p>
         <p><strong>Meta:</strong> R$ {doacao.meta}</p>
