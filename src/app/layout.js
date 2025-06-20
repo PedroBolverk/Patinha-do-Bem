@@ -1,9 +1,6 @@
-import './globals.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
-
-
-import {Gabarito} from 'next/font/google'
-
+import './globals.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Gabarito } from 'next/font/google';
 import ClientWrapper from './components/ClientWrapper';
 import SessionWrapper from './SessionWrapper';
 
@@ -11,9 +8,6 @@ const prompt = Gabarito({
   weight: '400',
   subsets: ['latin']
 })
-
-
-
 
 export const metadata = {
   title: "Patinha do Bem",
@@ -24,17 +18,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-br" className={prompt.className}>
       <body>
- <SessionWrapper>
+        <SessionWrapper>
           <ClientWrapper>
-  
-          
-
-        {children}
-         
-       </ClientWrapper>
-        
-        
-      </SessionWrapper>
+            {children}
+          </ClientWrapper>
+        </SessionWrapper>
       </body>
     </html>
   );

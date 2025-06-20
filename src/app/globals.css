@@ -6,9 +6,9 @@ body {
   
 }
 
-/* Container principal */
+
 .app-container {
-  width: 100%;     /* ✅ ajuste espaço lateral se quiser */
+  width: 100%;     
   margin: 56px auto;
   margin-top: 0;
   display: flex;
@@ -19,15 +19,15 @@ body {
 }
 
 
-/* Fonte */
+
 @import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap');
 
-/* Utilitários */
+
 .gabarito {
   font-family: "Gabarito", sans-serif;
 }
 
-/* Responsividade adicional (exemplo genérico, você pode mover para componentes específicos) */
+
 @media (max-width: 768px) {
   .app-container {
     margin-top: 0.1rem;

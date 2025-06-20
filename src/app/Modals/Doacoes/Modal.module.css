@@ -11,6 +11,15 @@
   justify-content: center;
   z-index: 1000;
 }
+.inputErro {
+  border-color: red;
+}
+
+.feedbackErro {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
 
 /* Modal central */
 .modal {
@@ -119,17 +128,48 @@
 }
 
 /* Botão WhatsApp */
-.confirmar {
-  display: inline-block;
-  background: #25D366;
-  color: white;
-  text-decoration: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+.confirmado {
+  background-color: #11dd41;
+  transform: scale(1.05);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.confirmadoContent {
+ display: flex;
+  align-items: center;
+  gap: 8px;
   font-weight: bold;
-  transition: background 0.3s ease;
+}
+.button {
+ margin-top: 1.5rem;
+   margin-top: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #00bfa6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+.checkIcon {
+  font-size: 18px;
+  animation: pop 0.3s ease forwards;
 }
 
-.confirmar:hover {
-  background: #1ebe5d;
+.spin {
+  display: inline-block;
+  animation: spinCheck 0.7s ease-in-out forwards;
+}
+.button:disabled {
+  /* opacity: 1.0; */
+  cursor: not-allowed;
+}
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
 }

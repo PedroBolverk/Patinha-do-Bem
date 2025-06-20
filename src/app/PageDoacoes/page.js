@@ -6,15 +6,13 @@ import CadastrarDoacao from '../components/ButtonCadastroDoacao/buttonCadastrarD
 import ModalDoacoes from '../Modals/Doacoes/modalDoacoes';
 
 export default function DoacoesPage() {
-  //pegar doações qualquer
+  
   const [doacoes, setDoacoes] = useState([]);
-  //pegar seleção, estado inicial quando nao tem nada selecionado
   const [selecionada, setSelecionada] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  //Chamada da API ao carregar a tela
   useEffect(() => {
     function handleRoleChange() {
       const storedUserRole = localStorage.getItem('userRole');
@@ -23,9 +21,9 @@ export default function DoacoesPage() {
     window.addEventListener('userRoleChanged', handleRoleChange);
 
     handleRoleChange();
-    fetch('/api/doacoes') //buscar doações
+    fetch('/api/doacoes') 
       .then((res) => {
-        if (!res.ok) throw new Error('Erro na resposta da API');//se nao carregar 
+        if (!res.ok) throw new Error('Erro na resposta da API');
         return res.json();
       })
       .then((data) => {
@@ -36,7 +34,9 @@ export default function DoacoesPage() {
         console.error('Erro ao buscar doações', err);
         setError('Erro ao carregar dados. Tente novamente.');
         setLoading(false);
-      });
+      })
+      
+      
     return () => {
       window.removeEventListener('userRoleChanged', handleRoleChange);
     };
@@ -62,9 +62,9 @@ export default function DoacoesPage() {
         {doacoes.length === 0 ? (
           <p>Nenhuma doação encontrada.</p>
         ) : (
-          doacoes.map((doacao) => (
-            <div key={doacao.id} onClick={() => setSelecionada(doacao)}>
-              <CardDoacao doacao={doacao} />
+          doacoes.map((post) => (
+            <div key={post.id} onClick={() => setSelecionada(post)}>
+              <CardDoacao doacao={post} />
             </div>
           ))
         )}

@@ -87,7 +87,8 @@ model Donation {
   amount      Int
   donorName   String?
   donorEmail  String?
-  status      String    @default("pending") // "pending" | "confirmed"
+  status      String    @default("pending")
+  whatsapp String?
 
   postId Int
   post   Post @relation(fields: [postId], references: [id])

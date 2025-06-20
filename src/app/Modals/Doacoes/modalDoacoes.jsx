@@ -11,11 +11,14 @@ export default function ModalDoacoes({ doacao, onClose }) {
   const [valorRaw, setValorRaw] = useState('');
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
   const [payload, setPayload] = useState(null);
   const [whatsappLink, setWhatsappLink] = useState(null);
   const [loading, setLoading] = useState(false);
   const [valorFormatado, setValorFormatado] = useState('');
   const [valorNumerico, setValorNumerico] = useState(0);
+  const [confirmado, setConfirmado] = useState(false);
+  const [errors, setErrors] = useState({});
 
   if (!doacao) return null;
 
@@ -46,13 +49,16 @@ export default function ModalDoacoes({ doacao, onClose }) {
   );
 
   const handleDoar = async () => {
+    const newErrors = {};
     if (!valorNumerico || valorNumerico <= 0) {
-      alert('Informe um valor válido para doar');
-      return;
+      newErrors.valor = 'Informe um valor válido';
+    }
+    if (!whatsapp.trim()) {
+      newErrors.whatsapp = 'Informe um número de WhatsApp';
     }
 
-    if (!doacao?.id) {
-      alert('ID da campanha não encontrado!');
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -61,6 +67,7 @@ export default function ModalDoacoes({ doacao, onClose }) {
       postId: doacao.id,
       donorName: nome,
       donorEmail: email,
+      whatsapp: whatsapp,
     });
 
     setLoading(true);
@@ -74,6 +81,7 @@ export default function ModalDoacoes({ doacao, onClose }) {
           postId: doacao.id,
           donorName: nome,
           donorEmail: email,
+          whatsapp: whatsapp,
         }),
       });
 
@@ -108,17 +116,42 @@ export default function ModalDoacoes({ doacao, onClose }) {
       setLoading(false);
     }
   };
+  const handleConfirmarPagamento = () => {
+    if (!whatsappLink) return;
+
+    setConfirmado(true);
+
+    setTimeout(() => {
+      window.open(whatsappLink, '_blank');
+      handleClose();
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    }, 700);
+  };
+
+
   const handleClose = () => {
-  
+
+    if (!whatsappLink) return;
+    setConfirmado(true);
+    setTimeout(() => {
+      window.open(whatsappLink, '_blank');
+      handleClose();
+    }, 700);
+
     setValorRaw('');
     setNome('');
     setEmail('');
+    setWhatsapp('');
     setPayload(null);
     setWhatsappLink(null);
     setLoading(false);
     setValorFormatado('');
     setValorNumerico(0);
-    onClose(); 
+    setConfirmado(false);
+    onClose();
+
   };
 
   return (
@@ -155,6 +188,26 @@ export default function ModalDoacoes({ doacao, onClose }) {
               onChange={(e) => setNome(e.target.value)}
             />
             <input
+              type="text"
+              placeholder="(99) 99999-9999"
+              value={whatsapp}
+              onChange={(e) => {
+                let input = e.target.value.replace(/\D/g, '');
+                if (input.length > 11) input = input.slice(0, 11);
+                const formatted = input
+                  .replace(/^(\d{2})(\d)/, '($1) $2')
+                  .replace(/(\d{5})(\d)/, '$1-$2');
+
+                setWhatsapp(formatted);
+              }}
+              className={`${styles.input} ${errors.whatsapp ? styles.inputErro : ''}`}
+            />
+            {errors.whatsapp && (
+              <div className={styles.feedbackErro}>{errors.whatsapp}</div>
+            )}
+
+
+            <input
               type="email"
               placeholder="Seu e-mail (opcional)"
               value={email}
@@ -178,14 +231,21 @@ export default function ModalDoacoes({ doacao, onClose }) {
             <textarea readOnly value={payload} rows={3} />
 
             {whatsappLink ? (
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.confirmar}
+              <button
+                className={`${styles.button} ${confirmado ? styles.confirmado : ''}`}
+                onClick={handleConfirmarPagamento}
+                disabled={confirmado}
               >
-                Já paguei (Confirmar via WhatsApp)
-              </a>
+                {confirmado ? (
+                  <span className={styles.confirmadoContent}>
+                    <span className={`${styles.checkIcon} ${styles.spin}`}>✔</span>Confirmado
+                  </span>
+                ) : (
+                  <span className={styles.confirmadoContent}>
+                    <span className={styles.checkIcon}>✔</span> Já paguei (Confirmar via WhatsApp)
+                  </span>
+                )}
+              </button>
             ) : (
               <p style={{ marginTop: '1rem', color: 'gray' }}>
                 Número de WhatsApp não cadastrado pelo organizador.

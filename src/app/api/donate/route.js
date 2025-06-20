@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { amount, postId, donorName, donorEmail } = body;
+    const { amount, postId, donorName, donorEmail, whatsapp } = body;
 
     // ✅ Validação obrigatória
     if (!amount || !postId || isNaN(amount) || Number(amount) <= 0) {
@@ -51,6 +51,7 @@ export async function POST(request) {
         amount: valorNumerico,
         donorName,
         donorEmail,
+        whatsapp,
         status: 'pending',
         postId: post.id,
         receiverId: post.author.id

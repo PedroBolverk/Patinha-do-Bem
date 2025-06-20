@@ -20,23 +20,47 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
 
-    const whereClause = userId ? { authorId: Number(userId) } : undefined;
+    let whereClause = undefined;
+
+    if (userId) {
+      const session = await getServerSession({ req: { headers: headers() }, ...authOptions });
+
+      if (!session || session.user?.id !== Number(userId)) {
+        return new Response(JSON.stringify({ error: 'Acesso não autorizado' }), { status: 401 });
+      }
+
+      whereClause = { authorId: Number(userId) };
+    }
 
     const doacoes = await prisma.post.findMany({
       where: whereClause,
-      include: { author: true },
+      include: {
+        author: true,
+        donations: true, // Adiciona as doações
+      },
       orderBy: { createdAt: "desc" },
     });
 
-    return new Response(JSON.stringify(doacoes), {
+    // Calcula o total de cada doação
+    const doacoesComAtual = doacoes.map((post) => {
+      const atual = post.donations.reduce((acc, d) => acc + d.amount, 0);
+      return { ...post, atual }; // ← mantém donations
+    });
+
+
+
+    return new Response(JSON.stringify(doacoesComAtual), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
+
   } catch (error) {
     console.error("Erro ao buscar doações:", error);
     return new Response(JSON.stringify({ error: "Erro interno" }), { status: 500 });
   }
 }
+
+
 
 export async function POST(request) {
   try {

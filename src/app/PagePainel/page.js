@@ -9,16 +9,7 @@ import CardLinhaPainel from '../components/Painel/CardTabela';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Painel() {
-  const [mostrar, setMostrar] = useState('eventos');
-  const [index, setIndex] = useState(0);
-  const [eventos, setEventos] = useState([]);
-  const [doacoes, setDoacoes] = useState([]);
-  const [partici, setParticipacoes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Hook para detectar largura da tela
-  function useWindowWidth() {
+   const useWindowWidth = () => {
     const [width, setWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
     useEffect(() => {
       const handleResize = () => setWidth(window.innerWidth);
@@ -26,30 +17,33 @@ export default function Painel() {
       return () => window.removeEventListener('resize', handleResize);
     }, []);
     return width;
-  }
+  };
+  const [mostrar, setMostrar] = useState('eventos');
+  const [index, setIndex] = useState(0);
+  const [eventos, setEventos] = useState([]);
+  const [doacoes, setDoacoes] = useState([]);
+  const [participacoes, setParticipacoes] = useState([]);
+  const [doacoesRecebidas, setDoacoesRecebidas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const width = useWindowWidth();
   const itemsPerSlide = width < 768 ? 1 : 3;
 
-  // Atualiza o índice quando os dados mudam
   useEffect(() => {
-    setIndex(0);
-  }, [eventos, doacoes]);
+    const fetchRecebidas = async () => {
+      try {
+        const res = await fetch('/api/recebidas');
+        if (!res.ok) throw new Error('Erro ao carregar doações recebidas');
+        const data = await res.json();
+        setDoacoesRecebidas(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  const handleSelect = (selectedIndex) => {
-    setIndex(selectedIndex);
-  };
-
-  function groupItems(items, itemsPerSlide) {
-    const groupedItems = [];
-    for (let i = 0; i < items.length; i += itemsPerSlide) {
-      groupedItems.push(items.slice(i, i + itemsPerSlide));
-    }
-    return groupedItems;
-  }
-
-  const eventoGrupos = useMemo(() => groupItems(eventos, itemsPerSlide), [eventos, itemsPerSlide]);
-  const doacaoGrupos = useMemo(() => groupItems(doacoes, itemsPerSlide), [doacoes, itemsPerSlide]);
+    fetchRecebidas();
+  }, []);
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
@@ -61,38 +55,77 @@ export default function Painel() {
       return;
     }
 
-    fetch(`/api/eventos?userId=${userId}`)
-      .then(res => res.json())
-      .then(setEventos)
-      .catch(console.error);
+    async function fetchPainelData() {
+      try {
+        const [eventosRes, participacoesRes, doacoesRes] = await Promise.all([
+          fetch(`/api/eventos?userId=${userId}`),
+          fetch(`/api/participacoes?userId=${userId}`),
+          fetch(`/api/doacoes?userId=${userId}`),
+        ]);
 
-    fetch(`/api/participacoes?userId=${userId}`)
-      .then(res => res.json())
-      .then(setParticipacoes)
-      .catch(console.error);
+        const [eventosData, participacoesData, doacoesData] = await Promise.all([
+          eventosRes.json(),
+          participacoesRes.json(),
+          doacoesRes.json(),
+        ]);
 
-    fetch(`/api/doacoes?userId=${userId}`)
-      .then(res => res.json())
-      .then(setDoacoes)
-      .catch(console.error)
-      .finally(() => setLoading(false));
+        setEventos(eventosData);
+        setParticipacoes(participacoesData);
+        setDoacoes(doacoesData);
+      } catch (err) {
+        console.error('Erro ao buscar dados do painel:', err);
+        setError('Erro ao carregar dados');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPainelData();
   }, []);
 
-  if (loading) return <div>Carregando dados...</div>;
-  if (error) return <div>{error}</div>;
+  const confirmarDoacao = async (id) => {
+    try {
+      const res = await fetch(`/api/doacoes/${id}/confirm`, { method: 'PATCH' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || 'Erro ao confirmar doação');
+
+      setDoacoesRecebidas((prev) =>
+        prev.map((doa) =>
+          doa.id === id ? { ...doa, status: 'confirmed', confirmedAt: new Date() } : doa
+        )
+      );
+    } catch (err) {
+      console.error('Erro ao confirmar doação:', err);
+      alert('Erro ao confirmar a doação');
+    }
+  };
+
+ 
+
+  const handleSelect = (selectedIndex) => setIndex(selectedIndex);
+
+  const groupItems = (items, perSlide) => {
+    const grouped = [];
+    for (let i = 0; i < items.length; i += perSlide) {
+      grouped.push(items.slice(i, i + perSlide));
+    }
+    return grouped;
+  };
+
+  const eventoGrupos = useMemo(() => groupItems(eventos, itemsPerSlide), [eventos, itemsPerSlide]);
+  const doacaoGrupos = useMemo(() => groupItems(doacoes, itemsPerSlide), [doacoes, itemsPerSlide]);
 
   const renderTabela = () => {
-    if (mostrar === 'eventos' || mostrar === 'doacoes') {
+    if (mostrar === 'eventos') {
       return (
         <>
           <Form>
-            <Form.Group className="mb-3" controlId="formGroupEmail">
-              <Form.Label>{mostrar === 'eventos' ? 'Pesquise seu Evento' : 'Pesquise sua Doação'}</Form.Label>
+            <Form.Group className="mb-3">
+              <Form.Label>Pesquise seu Evento</Form.Label>
               <Form.Control type="text" placeholder="Digite sua pesquisa" />
             </Form.Group>
           </Form>
-
-          {partici.map((p) => (
+          {participacoes.map((p) => (
             <CardLinhaPainel
               key={p.id}
               valor={0}
@@ -109,20 +142,33 @@ export default function Painel() {
 
     return (
       <>
-        {doacoes.map((d) => (
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Doações Recebidas</Form.Label>
+            <Form.Control type="text" placeholder="Digite sua pesquisa" />
+          </Form.Group>
+        </Form>
+
+        {doacoesRecebidas.map((d) => (
           <CardLinhaPainel
             key={d.id}
-            valor={d.meta}
-            titulo={d.titulo}
-            nome={d.author?.name || 'Anônimo'}
-            email={d.author?.email || '---'}
+            id={d.id}
+            valor={d.amount}
+            titulo={d.post?.titulo}
+            nome={d.donorName || 'Anônimo'}
+            email={d.donorEmail || '---'}
+            whatsapp={d.whatsapp}
             data={d.createdAt}
-            status="confirmado"
+            status={d.status}
+            onConfirm={confirmarDoacao}
           />
         ))}
       </>
     );
   };
+
+  if (loading) return <div>Carregando dados...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="container">
@@ -145,47 +191,33 @@ export default function Painel() {
 
       {mostrar === 'eventos' && eventoGrupos.length > 0 && (
         <div className={styles.carouselWrapper}>
-        <Carousel
-          activeIndex={index}
-          onSelect={handleSelect}
-          controls={false}
-          indicators
-          variant="dark"
-          slide
-        >
-          {eventoGrupos.map((grupo, idx) => (
-            <CarouselItem key={idx}>
-              <div className={styles.carouselGroup}>
-                {grupo.map((evento) => (
-                  <EventoCard key={evento.id} evento={evento} />
-                ))}
-              </div>
-            </CarouselItem>
-          ))}
-        </Carousel>
+          <Carousel activeIndex={index} onSelect={handleSelect} controls={false} indicators variant="dark" slide>
+            {eventoGrupos.map((grupo, idx) => (
+              <CarouselItem key={idx}>
+                <div className={styles.carouselGroup}>
+                  {grupo.map((evento) => (
+                    <EventoCard key={evento.id} evento={evento} />
+                  ))}
+                </div>
+              </CarouselItem>
+            ))}
+          </Carousel>
         </div>
       )}
 
       {mostrar === 'doacoes' && doacaoGrupos.length > 0 && (
         <div className={styles.carouselWrapper}>
-        <Carousel
-          activeIndex={index}
-          onSelect={handleSelect}
-          controls={false}
-          indicators
-          variant="dark"
-          slide
-        >
-          {doacaoGrupos.map((grupo, idx) => (
-            <CarouselItem key={idx}>
-              <div className={styles.carouselGroup}>
-                {grupo.map((doacao) => (
-                  <CardDoacao key={doacao.id} doacao={doacao} />
-                ))}
-              </div>
-            </CarouselItem>
-          ))}
-        </Carousel>
+          <Carousel activeIndex={index} onSelect={handleSelect} controls={false} indicators variant="dark" slide>
+            {doacaoGrupos.map((grupo, idx) => (
+              <CarouselItem key={idx}>
+                <div className={styles.carouselGroup}>
+                  {grupo.map((doacao) => (
+                    <CardDoacao key={doacao.id} doacao={doacao} />
+                  ))}
+                </div>
+              </CarouselItem>
+            ))}
+          </Carousel>
         </div>
       )}
 
