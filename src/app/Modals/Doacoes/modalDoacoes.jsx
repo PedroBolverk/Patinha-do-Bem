@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import styles from './Modal.module.css';
 import { useSession } from 'next-auth/react';
@@ -19,6 +19,18 @@ export default function ModalDoacoes({ doacao, onClose }) {
   const [valorNumerico, setValorNumerico] = useState(0);
   const [confirmado, setConfirmado] = useState(false);
   const [errors, setErrors] = useState({});
+
+   useEffect(() => {
+    if (session?.user?.name && !nome) {
+      setNome(session.user.name);
+    }
+    if (session?.user?.email && !email) {
+      setEmail(session.user.email);
+    }
+    if (session?.user?.whatsapp && !whatsapp) {
+      setWhatsapp(session.user.whatsapp);
+    }
+  }, [session]);
 
   if (!doacao) return null;
 
@@ -153,6 +165,9 @@ export default function ModalDoacoes({ doacao, onClose }) {
     onClose();
 
   };
+
+ 
+
 
   return (
     <div className={styles.overlay} onClick={handleClose}>

@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Gabarito } from 'next/font/google';
 import ClientWrapper from './components/ClientWrapper';
 import SessionWrapper from './SessionWrapper';
+import BotaoAjuda from './components/buttonHelp';
 
 const prompt = Gabarito({
   weight: '400',
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
         <SessionWrapper>
           <ClientWrapper>
             {children}
+            <BotaoAjuda/>
           </ClientWrapper>
         </SessionWrapper>
       </body>

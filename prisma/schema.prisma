@@ -23,7 +23,7 @@ model User {
   id       Int     @id @default(autoincrement())
   name     String
   whatsapp String?
-  username String  @unique
+  username String  
   role     Role    @default(COMUM)
   email    String  @unique
   password String
@@ -74,6 +74,7 @@ model Events {
 model Participacao {
   id       Int      @id @default(autoincrement())
   nome     String
+  whatsapp String?
   email    String
   eventoId Int
   evento   Events   @relation(fields: [eventoId], references: [id])

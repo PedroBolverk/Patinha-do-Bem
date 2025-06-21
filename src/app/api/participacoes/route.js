@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
-    const { eventoId, nome, email } = await req.json();
+    const { eventoId, nome, email, whatsapp } = await req.json();
 
     if (!eventoId || !nome || !email) {
       return new Response(JSON.stringify({ error: 'Dados incompletos' }), { status: 400 });
@@ -15,6 +15,7 @@ export async function POST(req) {
         eventoId: parseInt(eventoId),
         nome,
         email,
+        whatsapp,
         dataHora: new Date(),
       },
     });

@@ -1,9 +1,11 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { Modal, Button, Form, Col } from 'react-bootstrap';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import styles from '@/app/Modals/Modal.module.css';
 import Login from '@/app/components/Header/Login.png';
+import Shepherd from 'shepherd.js';
 
 export default function RegisterModal({ show, handleClose, openLogin }) {
   const inputFileRef = useRef(null);
@@ -26,6 +28,9 @@ export default function RegisterModal({ show, handleClose, openLogin }) {
     whatsapp: '',
     pix: '',
   });
+  const typeUserRef = useRef(null);
+  const pathname = usePathname();
+
 
   useEffect(() => {
     fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome')
@@ -41,6 +46,79 @@ export default function RegisterModal({ show, handleClose, openLogin }) {
         .catch(err => console.error('Erro ao carregar estados:', err));
     }
   }, [selectedState]);
+
+ useEffect(() => {
+  if (pathname !== '/' || !show) return;
+
+  const STORAGE_KEY = 'register_modal_tour_finalizado';
+
+  function limparCacheDeTour() {
+    window.tourAtual = null;
+    window.iniciarTour = undefined;
+  }
+
+  function startRegisterTour() {
+    if (window.tourAtual?.isActive()) return;
+
+    if (!typeUserRef.current) {
+      setTimeout(startRegisterTour, 100);
+      return;
+    }
+
+    const tour = new Shepherd.Tour({
+      defaultStepOptions: {
+        scrollTo: true,
+        cancelIcon: { enabled: true },
+        classes: 'shepherd-theme-custom',
+      },
+    });
+
+    tour.addStep({
+      title: 'Qual tipo de usuário você é?',
+      text: `Usuário Comum: pode doar e se inscrever em eventos.<br><br>Organizador: além das funções comuns, você tem acesso a um painel de gestão para acompanhar quem doou e quem está participando dos seus eventos.`,
+      attachTo: {
+        element: typeUserRef.current,
+        on: 'bottom',
+      },
+      buttons: [{
+        text: 'Finalizar',
+        action: () => {
+          tour.complete();
+          localStorage.setItem(STORAGE_KEY, 'true');
+          limparCacheDeTour();
+        }
+      }],
+    });
+
+    tour.on('cancel', () => {
+      localStorage.setItem(STORAGE_KEY, 'true');
+      limparCacheDeTour();
+    });
+
+    tour.on('complete', () => {
+      localStorage.setItem(STORAGE_KEY, 'true');
+      limparCacheDeTour();
+    });
+
+    tour.start();
+    window.tourAtual = tour;
+  }
+  window.iniciarTour = startRegisterTour;
+
+  if (!localStorage.getItem(STORAGE_KEY)) {
+    startRegisterTour();
+  }
+
+  return () => {
+    if (window.tourAtual?.isActive()) {
+      window.tourAtual.cancel();
+    }
+    limparCacheDeTour();
+  };
+}, [pathname, show]);
+
+
+
 
 
   const handleChange = (e) => {
@@ -136,6 +214,7 @@ export default function RegisterModal({ show, handleClose, openLogin }) {
             aria-label="Default select example"
             name='role'
             value={formData.role}
+            ref={typeUserRef}
             onChange={e => setFormData(prev => ({ ...prev, role: e.target.value }))}
           >
             <option value='COMUM'>Comum</option>

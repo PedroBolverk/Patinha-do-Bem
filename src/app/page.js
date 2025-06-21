@@ -1,6 +1,7 @@
 import HomePage from "./pages/HomePage";
-import styles from './globals.css'
+import styles from './globals.css';
 import logger from "./logger";
+import 'shepherd.js/dist/css/shepherd.css'
 
 async function fetchDoacoes() {
   try {

@@ -128,9 +128,9 @@ export default function Painel() {
           {participacoes.map((p) => (
             <CardLinhaPainel
               key={p.id}
-              valor={0}
               titulo={p.evento?.titulo}
               nome={p.nome}
+              whatsapp={p.whatsapp}
               email={p.email}
               data={p.dataHora}
               status="confirmado"
