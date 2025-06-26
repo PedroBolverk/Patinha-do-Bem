@@ -67,7 +67,7 @@ export default function EventosPage() {
       )}
 
       {selecionada && (
-        <ModalEventos eventos={selecionada} onClose={() => setSelecionada(null)} />
+        <ModalEventos evento={selecionada} onClose={() => setSelecionada(null)} />
       )}
     </div>
   );

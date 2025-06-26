@@ -5,8 +5,9 @@ import { Form, Carousel, CarouselItem } from 'react-bootstrap';
 import styles from './style.module.css';
 import EventoCard from '../components/Eventos/CardEventos';
 import CardDoacao from '../components/CardDoacoes';
-import CardLinhaPainel from '../components/Painel/CardTabela';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import TableDoacoes from '../components/Painel/TabelaDoacoes';
+import TableEvents from '../components/Painel/TabelaEvents';
 
 export default function Painel() {
    const useWindowWidth = () => {
@@ -126,10 +127,11 @@ export default function Painel() {
             </Form.Group>
           </Form>
           {participacoes.map((p) => (
-            <CardLinhaPainel
+            <TableEvents
               key={p.id}
               titulo={p.evento?.titulo}
               nome={p.nome}
+              valorEvento={p.valorEvento}
               whatsapp={p.whatsapp}
               email={p.email}
               data={p.dataHora}
@@ -150,7 +152,7 @@ export default function Painel() {
         </Form>
 
         {doacoesRecebidas.map((d) => (
-          <CardLinhaPainel
+          <TableDoacoes
             key={d.id}
             id={d.id}
             valor={d.amount}

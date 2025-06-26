@@ -2,9 +2,9 @@
 import styles from './style.module.css';
 import { useState } from 'react';
 
-export default function CardLinhaPainel({
+export default function TableEvents({
   id,
-  valor,
+  valorEvento,
   titulo,
   nome,
   whatsapp,
@@ -40,7 +40,7 @@ export default function CardLinhaPainel({
   return (
     <div className={styles.card}>
       <div className={styles.coluna}>
-        <strong>R$ {valor?.toLocaleString('pt-BR') ?? 'Free'}</strong>
+        <strong>R$ {valorEvento?.toLocaleString('pt-BR') ?? 'Free'}</strong>
         <div>{nome || 'Anônimo'}</div>
         <div>{whatsapp}</div>
         <div className={styles.email}>{email || '---'}</div>

@@ -19,6 +19,10 @@ export async function GET(request) {
     const eventos = await AsyncRetry(() =>
       prisma.events.findMany({
         where: whereClause,
+        include: {
+        organizador: true,
+        participacoes: true,
+      },
         orderBy: { dataIni: 'asc' },
       }), { retries: 3, minTimeout: 500 }
     );
@@ -49,6 +53,7 @@ export async function POST(request) {
     const dataFim = formData.get('dataFim');
     const local = formData.get('local');
     const imagem = formData.get('imagem');
+    const valor = formData.get('valor');
 
     let imagePath = null;
 
@@ -70,6 +75,7 @@ export async function POST(request) {
       prisma.events.create({
         data: {
           titulo: String(titulo),
+          valor: Number(valor),
           descricao: String(descricao),
           dataIni: new Date(dataIni),
           dataFim: new Date(dataFim),

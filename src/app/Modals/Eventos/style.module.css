@@ -60,6 +60,15 @@
     display: flex;
     flex-direction: column;
 }
+.close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
 
 .closeButton {
   position: absolute;
@@ -125,7 +134,24 @@
   gap: 8px;
   font-weight: bold;
 }
+.resultado {
+  text-align: center;
+  margin-top: 2rem;
+}
+.resultado h3 {
+  margin-bottom: 1rem;
+}
 
+.resultado textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  resize: none;
+}
 .checkIcon {
   font-size: 18px;
   animation: pop 0.3s ease forwards;

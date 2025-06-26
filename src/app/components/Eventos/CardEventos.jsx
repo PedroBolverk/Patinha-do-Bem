@@ -23,6 +23,7 @@ export default function EventoCard({ evento, onSelect }) {
       </div>
       <div className={styles.body}>
         <h3 className={styles.title}>{evento.titulo}</h3>
+        <p><strong>Representante:</strong> {evento.organizador?.whatsapp}</p>
         <p className={styles.desc}>{evento.descricao}</p>
       </div>
     </div>

@@ -34,7 +34,7 @@ model User {
 
   // Events   Events[]
   Post              Post[]
-  events            Events[]   @relation("OrganizadorEvents")
+  events            Events[]
   donationsReceived Donation[] @relation("UserDonations")
 }
 
@@ -58,13 +58,14 @@ model Events {
   descricao String
   dataIni   DateTime @default(now())
   dataFim   DateTime @default(now())
+  valorEvento     Int?
   local     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   imagem    String?
 
-  organizadorId Int?
-  organizador   User? @relation("OrganizadorEvents", fields: [organizadorId], references: [id])
+  organizadorId Int
+  organizador   User @relation(fields: [organizadorId], references: [id])
 
   participacoes Participacao[]
 
@@ -77,8 +78,10 @@ model Participacao {
   whatsapp String?
   email    String
   eventoId Int
+  status   String?
   evento   Events   @relation(fields: [eventoId], references: [id])
   dataHora DateTime @default(now())
+  valorEvento   Int?
 }
 
 model Donation {
