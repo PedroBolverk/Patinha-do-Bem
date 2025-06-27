@@ -11,12 +11,10 @@ export async function POST(request) {
     const body = await request.json();
     const { amount, postId, donorName, donorEmail, whatsapp } = body;
 
-    // ✅ Validação obrigatória
     if (!amount || !postId || isNaN(amount) || Number(amount) <= 0) {
       return NextResponse.json({ error: 'Valor ou campanha inválidos' }, { status: 400 });
     }
 
-    // 🔎 Busca a campanha e o autor com chave Pix
     const post = await prisma.post.findUnique({
       where: { id: postId },
       include: { author: true }
@@ -28,24 +26,22 @@ export async function POST(request) {
 
     const valorNumerico = parseFloat(Number(amount).toFixed(2));
 
-    // 🧼 Nome do recebedor (sem acentos, em caixa alta)
     const sanitizedName = post.author.name
       ?.toUpperCase()
       .substring(0, 25)
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
 
-    // 🏷️ Descrição do pagamento Pix
+    // Descrição do pagamento Pix
     const descricaoPix = `Doação ${post.titulo}`.substring(0, 30);
 
-    // 🧾 Gera payload Pix válido
+    // Gera payload Pix válido
     const payload = generatePixPayload({
       pixKey: post.author.pix,
       amount: valorNumerico,
       merchantName: sanitizedName,
     });
 
-    // 💾 Salva a doação no banco
     const donation = await prisma.donation.create({
       data: {
         amount: valorNumerico,
@@ -58,7 +54,7 @@ export async function POST(request) {
       }
     });
 
-    // 📲 Geração do link de confirmação via WhatsApp
+    // Geração do link de confirmação via WhatsApp
     const phone = post.author.whatsapp?.replace(/\D/g, '') || '';
     const valorFormatado = formatCurrency(valorNumerico);
     const confirmUrl = `https://seusite.com/confirmar-doacao/${donation.id}`;

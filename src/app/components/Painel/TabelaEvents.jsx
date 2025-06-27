@@ -25,13 +25,20 @@ export default function TableEvents({
   }[statusLower] || styles.statusCinza;
 
   const handleConfirmar = async () => {
-    if (!id || !onConfirm) return;
-    setConfirmando(true);
+    console.log("Botão de confirmar clicado com ID:", id)
+
+    if (!id || !onConfirm) {
+      console.error("Função de confirmação não está definida corretamente.");
+      return;
+    }
+
+    setConfirmando(true); 
+
     try {
-      await onConfirm(id);
+      await onConfirm(id); 
     } catch (err) {
-      console.error(err);
-      alert('Erro ao confirmar doação');
+      console.error('Erro ao confirmar evento:', err);
+      alert('Erro ao confirmar evento');
     } finally {
       setConfirmando(false);
     }

@@ -82,6 +82,7 @@ model Participacao {
   evento   Events   @relation(fields: [eventoId], references: [id])
   dataHora DateTime @default(now())
   valorEvento   Int?
+  confirmedAt DateTime? 
 }
 
 model Donation {

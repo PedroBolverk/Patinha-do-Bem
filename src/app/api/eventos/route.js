@@ -2,6 +2,9 @@ import AsyncRetry from "async-retry";
 import cloudinary from "../../../../lib/cloudinary";
 import { Readable } from "stream";
 import prisma from "../../../../lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/authOption";
+import { headers } from "next/headers";
 
 function bufferToStream(buffer) {
   const stream = new Readable();
@@ -14,7 +17,16 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
-    const whereClause = userId ? { organizadorId: Number(userId) } : {};
+    let whereClause = userId ? { organizadorId: Number(userId) } : {};
+      if (userId) {
+      const session = await getServerSession({ req: { headers: headers() }, ...authOptions });
+
+      if (!session || session.user?.id !== Number(userId)) {
+        return new Response(JSON.stringify({ error: 'Acesso não autorizado' }), { status: 401 });
+      }
+
+      whereClause = { organizadorId: Number(userId) };
+    }
 
     const eventos = await AsyncRetry(() =>
       prisma.events.findMany({
@@ -53,7 +65,11 @@ export async function POST(request) {
     const dataFim = formData.get('dataFim');
     const local = formData.get('local');
     const imagem = formData.get('imagem');
-    const valor = formData.get('valor');
+    const valorEvento = formData.get('valorEvento');
+
+    if (!titulo || !descricao || !valorEvento) {
+      return new Response(JSON.stringify({ error: "Dados obrigatórios ausentes" }), { status: 400 });
+    }
 
     let imagePath = null;
 
@@ -75,7 +91,7 @@ export async function POST(request) {
       prisma.events.create({
         data: {
           titulo: String(titulo),
-          valor: Number(valor),
+          valorEvento: Number(valorEvento),
           descricao: String(descricao),
           dataIni: new Date(dataIni),
           dataFim: new Date(dataFim),

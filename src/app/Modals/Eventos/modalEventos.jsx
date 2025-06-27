@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
-import IconeUpload from '@/app/Pageeventos/iconUpload.png';
+import IconeUpload from '@/app/PageEventos/iconUpload.png';
 import styles from './style.module.css';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -66,7 +66,7 @@ export default function Modalevento({ evento, onClose }) {
 
     setLoading(true);
 
-    const res = await fetch('/api/participacoes', {
+    const res = await fetch('/api/eventos/participacoes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

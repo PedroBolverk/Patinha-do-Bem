@@ -6,7 +6,7 @@ import styles from './style.module.css';
 import EventoCard from '../components/Eventos/CardEventos';
 import CardDoacao from '../components/CardDoacoes';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import TableDoacoes from '../components/Painel/TabelaDoacoes';
+import CardLinhaPainel from '../components/Painel/TabelaDoacoes';
 import TableEvents from '../components/Painel/TabelaEvents';
 
 export default function Painel() {
@@ -27,24 +27,27 @@ export default function Painel() {
   const [doacoesRecebidas, setDoacoesRecebidas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [participacoesRecebidas, setParticipacoesRecebidas] = useState([]);
 
   const width = useWindowWidth();
   const itemsPerSlide = width < 768 ? 1 : 3;
 
   useEffect(() => {
-    const fetchRecebidas = async () => {
-      try {
-        const res = await fetch('/api/recebidas');
-        if (!res.ok) throw new Error('Erro ao carregar doações recebidas');
-        const data = await res.json();
-        setDoacoesRecebidas(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+  const fetchRecebidas = async () => {
+    try {
+      const res = await fetch('/api/recebidas');
+      if (!res.ok) throw new Error('Erro ao carregar doações recebidas');
+      const data = await res.json();
+      console.log('Doações Recebidas:', data);
+      setDoacoesRecebidas(Array.isArray(data.doacoes) ? data.doacoes : []);
+      setParticipacoesRecebidas(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    fetchRecebidas();
-  }, []);
+  fetchRecebidas();
+}, []);
 
   useEffect(() => {
     const userId = localStorage.getItem('userId');
@@ -60,7 +63,7 @@ export default function Painel() {
       try {
         const [eventosRes, participacoesRes, doacoesRes] = await Promise.all([
           fetch(`/api/eventos?userId=${userId}`),
-          fetch(`/api/participacoes?userId=${userId}`),
+          fetch(`/api/eventos/participacoes?userId=${userId}`),
           fetch(`/api/doacoes?userId=${userId}`),
         ]);
 
@@ -100,6 +103,28 @@ export default function Painel() {
       alert('Erro ao confirmar a doação');
     }
   };
+  const confirmarParticipacao = async (id) => {
+    console.log(`Confirmando participação com ID: ${id}`);
+
+    try {
+      const res = await fetch(`/api/eventos/${id}/confirm`, { method: 'PATCH' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || 'Erro ao confirmar a participação');
+
+      setParticipacoes((prevParticipacoes) =>
+        prevParticipacoes.map((participacao) =>
+          participacao.id === id
+            ? { ...participacao, status: 'confirmed', confirmedAt: new Date() }
+            : participacao
+        )
+      );
+
+      console.log('Participação confirmada com sucesso:', json.update);
+    } catch (err) {
+      console.error('Erro ao confirmar participação:', err);
+      alert('Erro ao confirmar participação');
+    }
+  };
 
  
 
@@ -135,7 +160,9 @@ export default function Painel() {
               whatsapp={p.whatsapp}
               email={p.email}
               data={p.dataHora}
-              status="confirmado"
+              status={p.status}
+              id={p.id}
+              onConfirm={confirmarParticipacao}
             />
           ))}
         </>
@@ -152,7 +179,7 @@ export default function Painel() {
         </Form>
 
         {doacoesRecebidas.map((d) => (
-          <TableDoacoes
+          <CardLinhaPainel
             key={d.id}
             id={d.id}
             valor={d.amount}

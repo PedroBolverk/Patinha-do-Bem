@@ -1,5 +1,3 @@
-// src/app/api/recebidas/route.js
-
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/authOption";
@@ -8,6 +6,7 @@ import { headers } from "next/headers";
 const prisma = new PrismaClient();
 
 export async function GET() {
+
   const session = await getServerSession({ req: { headers: headers() }, ...authOptions });
 
   if (!session || !session.user?.id) {
@@ -16,18 +15,37 @@ export async function GET() {
 
   const doacoes = await prisma.donation.findMany({
     where: {
-      receiverId: session.user.id,
+      receiverId: session.user.id, 
     },
     include: {
-      post: true, // inclui a campanha
+      post: true,  
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: 'desc',  
     },
   });
 
-  return new Response(JSON.stringify(doacoes), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
+  const eventos = await prisma.events.findMany({
+    where: {
+      organizadorId: session.user.id, 
+    },
+    include: {
+      organizador: true, 
+      participacoes: true, 
+    },
+    orderBy: {
+      dataIni: 'asc', 
+    },
   });
+
+  return new Response(
+    JSON.stringify({
+      doacoes,
+      eventos,
+    }),
+    {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
 }

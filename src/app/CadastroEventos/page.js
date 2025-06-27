@@ -19,6 +19,7 @@ export default function CadastrarEventoPage() {
     dataIni: '',
     dataFim: '',
     local: '',
+    valorEvento:'',
   });
 
   function handleChange(e) {
@@ -55,6 +56,7 @@ export default function CadastrarEventoPage() {
     const res = await fetch(`/api/eventos?userId=${userId}`, {
       method: 'POST',
       body: form,
+      credentials: 'include',
     });
 
     if (res.ok) {
@@ -74,6 +76,18 @@ export default function CadastrarEventoPage() {
             type="text"
             name="titulo"
             value={formData.titulo}
+            onChange={handleChange}
+            required
+          />
+        </InputGroup>
+
+        <InputGroup className="mb-3">
+          <InputGroup.Text>Valor do Evento</InputGroup.Text>
+          <Form.Control
+            type="number"
+            placeholder="Valor do evento"
+            name="valorEvento"
+            value={formData.valorEvento}
             onChange={handleChange}
             required
           />
