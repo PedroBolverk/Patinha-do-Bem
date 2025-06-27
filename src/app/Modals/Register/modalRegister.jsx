@@ -75,7 +75,7 @@ export default function RegisterModal({ show, handleClose, openLogin }) {
 
     tour.addStep({
       title: 'Qual tipo de usuário você é?',
-      text: `Usuário Comum: pode doar e se inscrever em eventos.<br><br>Organizador: além das funções comuns, você tem acesso a um painel de gestão para acompanhar quem doou e quem está participando dos seus eventos.`,
+      text: `<strong>Usuário Comum:</strong> pode doar e se inscrever em eventos.<br><br><strong>Organizador:</strong> além das funções comuns, você tem acesso a um painel de gestão para acompanhar quem doou e quem está participando dos seus eventos.`,
       attachTo: {
         element: typeUserRef.current,
         on: 'bottom',
