@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react';
-import styles from '@/app/components/CardDoacoes/style.module.css';
+import styles from '@/app/PageEventos/style.module.css'
 import CardDoacao from '@/app/components/CardDoacoes/index';
 import CadastrarDoacao from '../components/ButtonCadastroDoacao/buttonCadastrarDoacao';
 import ModalDoacoes from '../Modals/Doacoes/modalDoacoes';
@@ -49,7 +49,7 @@ export default function DoacoesPage() {
   }
 
   return (
-    <main className={styles.containerMain}>
+    <main className={styles.pageContainer}>
       <div className={styles.header}>
         <h1 className={styles.titulo}>Doações em Andamento</h1>
         {userRole == 'ORGANIZADOR' && (
@@ -58,7 +58,7 @@ export default function DoacoesPage() {
       </div>
 
 
-      <div className={styles.container}>
+      <div className={styles.grid}>
         {doacoes.length === 0 ? (
           <p>Nenhuma doação encontrada.</p>
         ) : (

@@ -38,36 +38,40 @@ export default function CadastrarDoacaoPage() {
   }
 
   async function handleSubmit(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  const form = new FormData();
-  form.append('titulo', formData.titulo);
-  form.append('descricao', formData.descricao);
-  form.append('meta', formData.meta);
-  if (imageFile) {
-    form.append('imagem', imageFile);
+    const form = new FormData();
+    form.append('titulo', formData.titulo);
+    form.append('descricao', formData.descricao);
+    form.append('meta', formData.meta);
+
+    if (imageFile) {
+      form.append('imagem', imageFile);
+      console.log('Imagem enviada:', imageFile);
+    }
+
+    const res = await fetch('/api/doacoes', {
+      method: 'POST',
+      body: form,
+      credentials: 'include', // ✅ necessário para enviar cookies da sessão
+    });
+
+    if (res.ok) {
+      alert('Doação cadastrada com sucesso!');
+      router.push('/PageDoacoes');
+    } else {
+      const erro = await res.json();
+      console.error('Erro ao cadastrar a doação:', erro);
+      alert('Erro ao cadastrar a doação: ' + (erro?.error || 'desconhecido'));
+    }
   }
 
-  const res = await fetch('/api/doacoes', {
-    method: 'POST',
-    body: form,
-    credentials: 'include', // ✅ necessário para enviar cookies da sessão
-  });
-
-  if (res.ok) {
-    alert('Doação cadastrada com sucesso!');
-    router.push('/PageDoacoes');
-  } else {
-    const erro = await res.json();
-    alert('Erro ao cadastrar a doação: ' + (erro?.error || 'desconhecido'));
-  }
-}
 
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
       <div className={styles.leftColumn}>
-       <InputGroup className="mb-3">
+        <InputGroup className="mb-3">
           <InputGroup.Text>Título</InputGroup.Text>
           <Form.Control
             type="text"
@@ -90,8 +94,8 @@ export default function CadastrarDoacaoPage() {
             required
           />
         </InputGroup>
-     
-     <InputGroup className="mb-3">
+
+        <InputGroup className="mb-3">
           <InputGroup.Text>Meta</InputGroup.Text>
           <Form.Control
             type="number"
@@ -106,8 +110,8 @@ export default function CadastrarDoacaoPage() {
         <Button type="submit" variant="primary">
           Cadastrar Doação
         </Button>
-        </div>
-         {/* Coluna direita: upload da imagem */}
+      </div>
+      {/* Coluna direita: upload da imagem */}
       <div className={styles.rightColumn}>
         <input
           type="file"

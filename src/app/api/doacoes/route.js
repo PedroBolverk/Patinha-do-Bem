@@ -84,19 +84,25 @@ export async function POST(request) {
     let imagePath = null;
 
     if (imagem && typeof imagem.name === "string") {
+      console.log("Iniciando upload da imagem...");
       const buffer = Buffer.from(await imagem.arrayBuffer());
 
       imagePath = await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           { folder: "doacoes" },
           (error, result) => {
-            if (error) return reject(error);
+            if (error) {
+              console.error("Erro no upload da imagem:", error);
+              return reject(error);
+            }
+            console.log("Imagem upload concluído:", result);
             resolve(result.secure_url);
           }
         );
         bufferToStream(buffer).pipe(uploadStream);
       });
     }
+
 
     const novaDoacao = await prisma.post.create({
       data: {
