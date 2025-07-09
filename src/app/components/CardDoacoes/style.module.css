@@ -21,6 +21,8 @@
   transition: transform 0.2s ease;
   position: relative;
   cursor: pointer;
+  width: 100%;
+ 
 }
 .card:hover{
   transform: scale(1.05)  ;

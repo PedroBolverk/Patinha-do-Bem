@@ -24,11 +24,14 @@ export default function CardDoacao({ doacao }) {
       </div>
       <h3 className={styles.titulo}>{doacao.titulo}</h3>
       <p className={styles.descricao}>{doacao.descricao}</p>
-      <p><strong>Meta:</strong> R$ {doacao.meta}</p>
-      <p><strong>Arrecadado:</strong> R$ {doacao.atual}</p>
-      <p><strong>Representante:</strong> {doacao.author?.name}</p>
+      {/* <p><strong>Meta:</strong> R$ {doacao.meta}</p>
+      <p><strong>Arrecadado:</strong> R$ {doacao.atual}</p> */}
+      {/* <p><strong>Representante:</strong> {doacao.author?.name}</p> */}
+       <p>R$ {doacao.atual} DE R$ {doacao.meta}</p>
       <div className={styles.progressBar}>
-        <div className={styles.progress} style={{ width: `${porcentagem}%` }} />
+        
+        <div className={styles.progress} style={{ width: `${porcentagem}%` }}/>
+          
       </div>
       <span className={styles.porcentagem}>{porcentagem}% arrecadado</span>
     </div>
